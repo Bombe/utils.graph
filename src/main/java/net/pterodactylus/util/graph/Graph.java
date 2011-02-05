@@ -34,6 +34,7 @@ import net.pterodactylus.util.validation.Validation;
 public class Graph {
 
 	private static long nodeCounter = 0;
+	private static long edgeCounter = 0;
 
 	private final Set<Node> nodes = new HashSet<Node>();
 	private final Map<Node, Set<Edge>> nodeEdges = new HashMap<Node, Set<Edge>>();
@@ -87,7 +88,7 @@ public class Graph {
 	}
 
 	public Edge createEdge(Node startNode, Node endNode, Relationship relationship) {
-		Edge edge = new Edge(this, startNode, endNode, relationship);
+		Edge edge = new Edge(edgeCounter++, this, startNode, endNode, relationship);
 		Set<Edge> startNodeEdges = nodeEdges.get(startNode);
 		if (startNodeEdges == null) {
 			startNodeEdges = new HashSet<Edge>();

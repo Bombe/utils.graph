@@ -26,17 +26,23 @@ import net.pterodactylus.util.validation.Validation;
  */
 public class Edge {
 
+	private final long id;
 	private final Graph graph;
 	private final Node startNode;
 	private final Node endNode;
 	private final Relationship relationship;
 
-	Edge(Graph graph, Node startNode, Node endNode, Relationship relationship) {
+	Edge(long id, Graph graph, Node startNode, Node endNode, Relationship relationship) {
 		Validation.begin().isNotNull("Graph", graph).isNotNull("Start Node", startNode).isNotNull("End Node", endNode).isNotNull("Relationship", relationship).check().isEqual("Start Node’s Graph", startNode.getGraph(), graph).isEqual("End Node’s Graph", endNode.getGraph(), graph).check();
+		this.id = id;
 		this.graph = graph;
 		this.startNode = startNode;
 		this.endNode = endNode;
 		this.relationship = relationship;
+	}
+
+	long getId() {
+		return id;
 	}
 
 	public Graph getGraph() {
