@@ -27,11 +27,17 @@ import java.util.Map;
  */
 public class Node {
 
+	private final long id;
 	private final Graph graph;
 	private final Map<String, Object> properties = new HashMap<String, Object>();
 
-	Node(Graph graph) {
+	Node(long id, Graph graph) {
+		this.id = id;
 		this.graph = graph;
+	}
+
+	long getId() {
+		return id;
 	}
 
 	public Graph getGraph() {

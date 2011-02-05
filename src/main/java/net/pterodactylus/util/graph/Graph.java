@@ -33,6 +33,8 @@ import net.pterodactylus.util.validation.Validation;
  */
 public class Graph {
 
+	private static long nodeCounter = 0;
+
 	private final Set<Node> nodes = new HashSet<Node>();
 	private final Map<Node, Set<Edge>> nodeEdges = new HashMap<Node, Set<Edge>>();
 
@@ -72,7 +74,7 @@ public class Graph {
 
 	/* TODO - NodeFactory? */
 	public Node createNode() {
-		Node node = new Node(this);
+		Node node = new Node(nodeCounter++, this);
 		nodes.add(node);
 		return node;
 	}
