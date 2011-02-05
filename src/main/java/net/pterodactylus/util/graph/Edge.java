@@ -31,7 +31,7 @@ public class Edge {
 	private final Node endNode;
 	private final Relationship relationship;
 
-	public Edge(Graph graph, Node startNode, Node endNode, Relationship relationship) {
+	Edge(Graph graph, Node startNode, Node endNode, Relationship relationship) {
 		Validation.begin().isNotNull("Graph", graph).isNotNull("Start Node", startNode).isNotNull("End Node", endNode).isNotNull("Relationship", relationship).check().isEqual("Start Node’s Graph", startNode.getGraph(), graph).isEqual("End Node’s Graph", endNode.getGraph(), graph).check();
 		this.graph = graph;
 		this.startNode = startNode;
