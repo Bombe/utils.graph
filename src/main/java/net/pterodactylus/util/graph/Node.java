@@ -30,7 +30,7 @@ public class Node {
 	private final Graph graph;
 	private final Map<String, Object> properties = new HashMap<String, Object>();
 
-	public Node(Graph graph) {
+	Node(Graph graph) {
 		this.graph = graph;
 	}
 
