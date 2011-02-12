@@ -23,24 +23,40 @@ import java.io.ObjectOutputStream;
 import java.util.Set;
 
 import net.pterodactylus.util.graph.AbstractNode;
+import net.pterodactylus.util.graph.Node;
 import net.pterodactylus.util.graph.StoreException;
 import net.pterodactylus.util.io.Closer;
 import net.pterodactylus.util.validation.Validation;
 
 /**
- * TODO
+ * {@link Node} implementation that is used by {@link DiskStore}. It adds an ID
+ * to the node which is used when comparing nodes using
+ * {@link Object#equals(Object)}.
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelationship> implements Storable {
 
+	/** The ID of the node. */
 	private final long id;
 
+	/**
+	 * Creates a new node.
+	 *
+	 * @param id
+	 *            The ID of the node
+	 * @param graph
+	 *            The graph the node belongs to
+	 */
 	DiskNode(long id, DiskGraph graph) {
 		super(graph);
 		this.id = id;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public long getId() {
 		return id;
 	}
@@ -55,6 +71,9 @@ class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelations
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public DiskNode link(DiskNode otherNode, DiskRelationship relationship) {
 		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
@@ -62,6 +81,9 @@ class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelations
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public DiskNode unlink(DiskNode otherNode, DiskRelationship relationship) {
 		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
@@ -86,6 +108,10 @@ class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelations
 		Validation.begin().isNotNull("Relationship", relationship).check();
 		return getGraph().getEdgesFrom(this, relationship);
 	}
+
+	//
+	// OBJECT METHODS
+	//
 
 	/**
 	 * {@inheritDoc}
