@@ -44,9 +44,6 @@ public class Storage<T extends Storable> implements Closeable {
 
 	private final Storable.Factory<T> factory;
 
-	private final File directory;
-	private final String name;
-
 	private final RandomAccessFile indexFile;
 	private final RandomAccessFile dataFile;
 
@@ -66,8 +63,6 @@ public class Storage<T extends Storable> implements Closeable {
 
 	public Storage(Storable.Factory<T> factory, File directory, String name) throws FileNotFoundException {
 		this.factory = factory;
-		this.directory = directory;
-		this.name = name;
 		indexFile = new RandomAccessFile(new File(directory, name + ".idx"), "rws");
 		dataFile = new RandomAccessFile(new File(directory, name + ".dat"), "rws");
 	}
