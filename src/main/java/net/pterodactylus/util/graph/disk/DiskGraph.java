@@ -20,6 +20,7 @@ package net.pterodactylus.util.graph.disk;
 import java.util.Set;
 
 import net.pterodactylus.util.graph.Graph;
+import net.pterodactylus.util.graph.Node;
 import net.pterodactylus.util.validation.Validation;
 
 /**
@@ -27,7 +28,7 @@ import net.pterodactylus.util.validation.Validation;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-class DiskGraph implements Graph<DiskGraph, DiskNode, DiskEdge, DiskRelationship> {
+class DiskGraph implements Graph {
 
 	/** The disk store. */
 	private final DiskStore store;
@@ -135,9 +136,9 @@ class DiskGraph implements Graph<DiskGraph, DiskNode, DiskEdge, DiskRelationship
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void removeNode(DiskNode node) {
-		Validation.begin().isNotNull("Node", node).check().isEqual("Node’s Graph", node.getGraph(), this).check();
-		store.removeNode(node);
+	public void removeNode(Node node) {
+		Validation.begin().isNotNull("Node", node).check().isEqual("Node’s Graph", node.getGraph(), this).isInstanceOf("Node", node, DiskNode.class).check();
+		store.removeNode((DiskNode) node);
 	}
 
 	/**

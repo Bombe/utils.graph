@@ -28,7 +28,7 @@ import net.pterodactylus.util.storage.Storable;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-class DiskRelationship extends DefaultRelationship<DiskGraph, DiskNode, DiskEdge, DiskRelationship> implements Storable {
+class DiskRelationship extends DefaultRelationship implements Storable {
 
 	/** The ID of the relationship. */
 	private final long id;

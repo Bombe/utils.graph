@@ -24,20 +24,12 @@ import java.util.Map;
  * Abstract base implementation of a {@link Node}. This implementation stores
  * the {@link Graph} of a node and its properties.
  *
- * @param <G>
- *            The type of the graph
- * @param <N>
- *            The type of the node
- * @param <E>
- *            The type of the edge
- * @param <R>
- *            The type of the relationship
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public abstract class AbstractNode<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> implements Node<G, N, E, R> {
+public abstract class AbstractNode implements Node {
 
 	/** The graph this node belongs to. */
-	private transient final G graph;
+	private transient final Graph graph;
 
 	/** The properties of this node. */
 	private final Map<String, Object> properties = new HashMap<String, Object>();
@@ -48,7 +40,7 @@ public abstract class AbstractNode<G extends Graph<G, N, E, R>, N extends Node<G
 	 * @param graph
 	 *            The graph the node belongs to
 	 */
-	protected AbstractNode(G graph) {
+	protected AbstractNode(Graph graph) {
 		this.graph = graph;
 	}
 
@@ -56,7 +48,7 @@ public abstract class AbstractNode<G extends Graph<G, N, E, R>, N extends Node<G
 	 * {@inheritDoc}
 	 */
 	@Override
-	public G getGraph() {
+	public Graph getGraph() {
 		return graph;
 	}
 
@@ -64,10 +56,9 @@ public abstract class AbstractNode<G extends Graph<G, N, E, R>, N extends Node<G
 	 * {@inheritDoc}
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
-	public N set(String key, Object value) {
+	public Node set(String key, Object value) {
 		properties.put(key, value);
-		return (N) this;
+		return this;
 	}
 
 	/**

@@ -96,7 +96,7 @@ public class SpeedTest {
 		for (int i = 0; i < LINK_COUNT; ++i) {
 			Node targetNode = nodes.get(/* (int) (Math.random() */(i % nodes.size()));
 			Relationship relationship = relationships.get(/* (int) (Math.random() */i % relationships.size());
-			Set<Edge> edges = targetNode.getOutgoingLinks(relationship);
+			Set<? extends Edge> edges = targetNode.getOutgoingLinks(relationship);
 			edgeCount += edges.size();
 		}
 		milliseconds = (System.nanoTime() - timestamp) / 1000000.0;

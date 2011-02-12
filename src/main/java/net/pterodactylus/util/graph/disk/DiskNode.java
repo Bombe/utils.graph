@@ -24,6 +24,7 @@ import java.util.Set;
 
 import net.pterodactylus.util.graph.AbstractNode;
 import net.pterodactylus.util.graph.Node;
+import net.pterodactylus.util.graph.Relationship;
 import net.pterodactylus.util.io.Closer;
 import net.pterodactylus.util.storage.Storable;
 import net.pterodactylus.util.storage.StorageException;
@@ -36,7 +37,7 @@ import net.pterodactylus.util.validation.Validation;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelationship> implements Storable {
+class DiskNode extends AbstractNode implements Storable {
 
 	/** The ID of the node. */
 	private final long id;
@@ -51,6 +52,7 @@ class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelations
 	 */
 	DiskNode(long id, DiskGraph graph) {
 		super(graph);
+		Validation.begin().isNotNull("Graph", graph).check().isInstanceOf("Graph", graph, DiskGraph.class).check();
 		this.id = id;
 	}
 
@@ -68,7 +70,7 @@ class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelations
 	@Override
 	public DiskNode set(String key, Object value) {
 		super.set(key, value);
-		getGraph().storeNode(this);
+		((DiskGraph) getGraph()).storeNode(this);
 		return this;
 	}
 
@@ -76,9 +78,9 @@ class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelations
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DiskNode link(DiskNode otherNode, DiskRelationship relationship) {
-		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
-		getGraph().createEdge(this, otherNode, relationship);
+	public DiskNode link(Node otherNode, Relationship relationship) {
+		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isInstanceOf("Other Node", otherNode, DiskNode.class).isInstanceOf("Relationship", relationship, DiskRelationship.class).isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
+		((DiskGraph) getGraph()).createEdge(this, (DiskNode) otherNode, (DiskRelationship) relationship);
 		return this;
 	}
 
@@ -86,9 +88,9 @@ class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelations
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DiskNode unlink(DiskNode otherNode, DiskRelationship relationship) {
-		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
-		getGraph().removeEdge(this, otherNode, relationship);
+	public DiskNode unlink(Node otherNode, Relationship relationship) {
+		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isInstanceOf("Other Node", otherNode, DiskNode.class).isInstanceOf("Relationship", relationship, DiskRelationship.class).isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
+		((DiskGraph) getGraph()).removeEdge(this, (DiskNode) otherNode, (DiskRelationship) relationship);
 		return this;
 	}
 
@@ -96,18 +98,18 @@ class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelations
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Set<DiskEdge> getIncomingLinks(DiskRelationship relationship) {
-		Validation.begin().isNotNull("Relationship", relationship).check();
-		return getGraph().getEdgesTo(this, relationship);
+	public Set<DiskEdge> getIncomingLinks(Relationship relationship) {
+		Validation.begin().isNotNull("Relationship", relationship).check().isInstanceOf("Relationship", relationship, DiskRelationship.class).check();
+		return ((DiskGraph) getGraph()).getEdgesTo(this, (DiskRelationship) relationship);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Set<DiskEdge> getOutgoingLinks(DiskRelationship relationship) {
-		Validation.begin().isNotNull("Relationship", relationship).check();
-		return getGraph().getEdgesFrom(this, relationship);
+	public Set<DiskEdge> getOutgoingLinks(Relationship relationship) {
+		Validation.begin().isNotNull("Relationship", relationship).check().isInstanceOf("Relationship", relationship, DiskRelationship.class).check();
+		return ((DiskGraph) getGraph()).getEdgesFrom(this, (DiskRelationship) relationship);
 	}
 
 	//

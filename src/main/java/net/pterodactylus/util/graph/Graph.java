@@ -21,24 +21,16 @@ package net.pterodactylus.util.graph;
  * A graph contains the root {@link Node} of the graph which is used to access
  * all other nodes.
  *
- * @param <G>
- *            The type of the graph
- * @param <N>
- *            The type of the node
- * @param <E>
- *            The type of the edge
- * @param <R>
- *            The type of the relationship
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public interface Graph<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
+public interface Graph {
 
 	/**
 	 * Returns the root node of the graph.
 	 *
 	 * @return The root node of the graph
 	 */
-	public N getRootNode();
+	public Node getRootNode();
 
 	/**
 	 * Creates a new node. The created node does not have any links to other
@@ -46,7 +38,7 @@ public interface Graph<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, 
 	 *
 	 * @return The new node
 	 */
-	public N createNode();
+	public Node createNode();
 
 	/**
 	 * Removes this node from the graph. This will also remove all edges that
@@ -55,7 +47,7 @@ public interface Graph<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, 
 	 * @param node
 	 *            The node to remove
 	 */
-	public void removeNode(N node);
+	public void removeNode(Node node);
 
 	/**
 	 * Returns the relationship with the given name. If no relationship with the
@@ -65,6 +57,6 @@ public interface Graph<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, 
 	 *            The name of the relationship
 	 * @return The relationship with the given name
 	 */
-	public R getRelationship(String name);
+	public Relationship getRelationship(String name);
 
 }

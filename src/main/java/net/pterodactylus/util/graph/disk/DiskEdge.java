@@ -27,7 +27,7 @@ import net.pterodactylus.util.graph.Edge;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-class DiskEdge extends AbstractEdge<DiskGraph, DiskNode, DiskEdge, DiskRelationship> {
+class DiskEdge extends AbstractEdge {
 
 	/** The ID of the edge. */
 	private final long id;

@@ -20,17 +20,9 @@ package net.pterodactylus.util.graph;
 /**
  * Default implementation of a relationship that stores its name.
  *
- * @param <G>
- *            The type of the graph
- * @param <N>
- *            The type of the node
- * @param <E>
- *            The type of the edge
- * @param <R>
- *            The type of the relationship
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public class DefaultRelationship<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> implements Relationship<G, N, E, R> {
+public class DefaultRelationship implements Relationship {
 
 	/** The name of the relationship. */
 	private final String name;

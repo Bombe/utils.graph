@@ -24,29 +24,21 @@ import net.pterodactylus.util.validation.Validation;
  * the {@link Graph}, the two {@link Node}s, and the {@link Relationship} of the
  * edge.
  *
- * @param <G>
- *            The type of the graph
- * @param <N>
- *            The type of the node
- * @param <E>
- *            The type of the edge
- * @param <R>
- *            The type of the relationship
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public abstract class AbstractEdge<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> implements Edge<G, N, E, R> {
+public abstract class AbstractEdge implements Edge {
 
 	/** The graph this edge belongs to. */
-	private final G graph;
+	private final Graph graph;
 
 	/** The start node of this edge. */
-	private final N startNode;
+	private final Node startNode;
 
 	/** The end node of this edge. */
-	private final N endNode;
+	private final Node endNode;
 
 	/** The relationship between the two nodes. */
-	private final R relationship;
+	private final Relationship relationship;
 
 	/**
 	 * Creates a new abstract edge.
@@ -60,7 +52,7 @@ public abstract class AbstractEdge<G extends Graph<G, N, E, R>, N extends Node<G
 	 * @param relationship
 	 *            The relationship between the two nodes
 	 */
-	protected AbstractEdge(G graph, N startNode, N endNode, R relationship) {
+	protected AbstractEdge(Graph graph, Node startNode, Node endNode, Relationship relationship) {
 		Validation.begin().isNotNull("Graph", graph).isNotNull("Start Node", startNode).isNotNull("End Node", endNode).isNotNull("Relationship", relationship).check().isEqual("Start Node’s Graph", startNode.getGraph(), graph).isEqual("End Node’s Graph", endNode.getGraph(), graph).check();
 		this.graph = graph;
 		this.startNode = startNode;
@@ -72,7 +64,7 @@ public abstract class AbstractEdge<G extends Graph<G, N, E, R>, N extends Node<G
 	 * {@inheritDoc}
 	 */
 	@Override
-	public G getGraph() {
+	public Graph getGraph() {
 		return graph;
 	}
 
@@ -80,7 +72,7 @@ public abstract class AbstractEdge<G extends Graph<G, N, E, R>, N extends Node<G
 	 * {@inheritDoc}
 	 */
 	@Override
-	public N getStartNode() {
+	public Node getStartNode() {
 		return startNode;
 	}
 
@@ -88,7 +80,7 @@ public abstract class AbstractEdge<G extends Graph<G, N, E, R>, N extends Node<G
 	 * {@inheritDoc}
 	 */
 	@Override
-	public N getEndNode() {
+	public Node getEndNode() {
 		return endNode;
 	}
 
@@ -96,7 +88,7 @@ public abstract class AbstractEdge<G extends Graph<G, N, E, R>, N extends Node<G
 	 * {@inheritDoc}
 	 */
 	@Override
-	public R getRelationship() {
+	public Relationship getRelationship() {
 		return relationship;
 	}
 
@@ -120,7 +112,7 @@ public abstract class AbstractEdge<G extends Graph<G, N, E, R>, N extends Node<G
 		if (!(object instanceof Edge)) {
 			return false;
 		}
-		Edge<?, ?, ?, ?> edge = (Edge<?, ?, ?, ?>) object;
+		Edge edge = (Edge) object;
 		return graph.equals(edge.getGraph()) && startNode.equals(edge.getStartNode()) && endNode.equals(edge.getEndNode()) && relationship.equals(edge.getRelationship());
 	}
 

@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.pterodactylus.util.graph.Graph;
 import net.pterodactylus.util.graph.GraphException;
 import net.pterodactylus.util.graph.Store;
 import net.pterodactylus.util.storage.Allocation;
@@ -42,7 +43,7 @@ import net.pterodactylus.util.storage.StorageException;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelationship> {
+public class DiskStore implements Store {
 
 	/** {@link Factory} that can create {@link DiskRelationship}s. */
 	@SuppressWarnings("synthetic-access")
@@ -351,7 +352,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DiskGraph getGraph() {
+	public Graph getGraph() {
 		return graph;
 	}
 
@@ -384,7 +385,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		}
 		++relationshipCounter;
 
-		DiskNode rootNode;
+		DiskNode rootNode = null;
 		if (nodeStorage.size() > 0) {
 			rootNode = nodeStorage.load(0);
 			for (int directoryIndex = 0; directoryIndex < nodeStorage.getDirectorySize(); ++directoryIndex) {
@@ -395,8 +396,6 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 				nodeCounter = Math.max(nodeCounter, allocation.getId());
 			}
 			++nodeCounter;
-		} else {
-			rootNode = createNode();
 		}
 
 		for (int directoryIndex = 0; directoryIndex < nodeEdgeListStorage.getDirectorySize(); ++directoryIndex) {
@@ -409,6 +408,9 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		++edgeCounter;
 
 		graph = new DiskGraph(this);
+		if (rootNode == null) {
+			rootNode = createNode();
+		}
 		graph.setRootNode(rootNode);
 		return;
 	}
@@ -463,7 +465,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		@Override
 		public DiskNode restore(byte[] buffer) {
 			long id = Storable.Utils.getLong(buffer, 0);
-			DiskNode node = new DiskNode(id, store.getGraph());
+			DiskNode node = new DiskNode(id, (DiskGraph) store.getGraph());
 			try {
 				ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(buffer, 8, buffer.length - 8));
 				@SuppressWarnings("unchecked")

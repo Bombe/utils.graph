@@ -24,24 +24,16 @@ import java.util.Set;
  * and sever links to and from other nodes as well as storing custom properties
  * that can be used in an application to create the domain objects.
  *
- * @param <G>
- *            The type of the graph
- * @param <N>
- *            The type of the node
- * @param <E>
- *            The type of the edge
- * @param <R>
- *            The type of the relationship
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public interface Node<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
+public interface Node {
 
 	/**
 	 * Returns the graph this node belongs to.
 	 *
 	 * @return The graph this node belongs to
 	 */
-	public G getGraph();
+	public Graph getGraph();
 
 	/**
 	 * Sets a property on this node.
@@ -52,7 +44,7 @@ public interface Node<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E
 	 *            The value of the property
 	 * @return This node
 	 */
-	public N set(String key, Object value);
+	public Node set(String key, Object value);
 
 	/**
 	 * Returns the value of the property with the given key.
@@ -72,7 +64,7 @@ public interface Node<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E
 	 *            The relationship of the link
 	 * @return This node
 	 */
-	public N link(N otherNode, R relationship);
+	public Node link(Node otherNode, Relationship relationship);
 
 	/**
 	 * Removes the link to the given node with the given relationship.
@@ -83,7 +75,7 @@ public interface Node<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E
 	 *            The relationship of the link
 	 * @return This node
 	 */
-	public N unlink(N otherNode, R relationship);
+	public Node unlink(Node otherNode, Relationship relationship);
 
 	/**
 	 * Returns all edges that have this node as the end node.
@@ -93,7 +85,7 @@ public interface Node<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E
 	 *            The relationship of the edges
 	 * @return The edges that have this node as the end node
 	 */
-	public Set<E> getIncomingLinks(R relationship);
+	public Set<? extends Edge> getIncomingLinks(Relationship relationship);
 
 	/**
 	 * Returns all edges that have this node as the start node.
@@ -103,6 +95,6 @@ public interface Node<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E
 	 *            The relationship of the edges
 	 * @return The edges that have this node as the start node
 	 */
-	public Set<E> getOutgoingLinks(R relationship);
+	public Set<? extends Edge> getOutgoingLinks(Relationship relationship);
 
 }
