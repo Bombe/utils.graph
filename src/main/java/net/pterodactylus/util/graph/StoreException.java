@@ -1,5 +1,5 @@
 /*
- * utils.graph - Edge.java - Copyright © 2011 David Roden
+ * utils.graph - StoreException.java - Copyright © 2011 David Roden
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,41 @@ package net.pterodactylus.util.graph;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public interface Edge<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
+public class StoreException extends Exception {
 
-	public Graph getGraph();
+	/**
+	 * TODO
+	 */
+	public StoreException() {
+		/* TODO */
+	}
 
-	public N getStartNode();
+	/**
+	 * TODO
+	 *
+	 * @param message
+	 */
+	public StoreException(String message) {
+		super(message);
+	}
 
-	public N getEndNode();
+	/**
+	 * TODO
+	 *
+	 * @param cause
+	 */
+	public StoreException(Throwable cause) {
+		super(cause);
+	}
 
-	public Relationship getRelationship();
+	/**
+	 * TODO
+	 *
+	 * @param message
+	 * @param cause
+	 */
+	public StoreException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
 }

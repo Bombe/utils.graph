@@ -1,5 +1,5 @@
 /*
- * utils.graph - Edge.java - Copyright © 2011 David Roden
+ * utils.graph - GraphException.java - Copyright © 2011 David Roden
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,22 @@ package net.pterodactylus.util.graph;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public interface Edge<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
+public class GraphException extends Exception {
 
-	public Graph getGraph();
+	public GraphException() {
+		super();
+	}
 
-	public N getStartNode();
+	public GraphException(String message) {
+		super(message);
+	}
 
-	public N getEndNode();
+	public GraphException(Throwable cause) {
+		super(cause);
+	}
 
-	public Relationship getRelationship();
+	public GraphException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
 }

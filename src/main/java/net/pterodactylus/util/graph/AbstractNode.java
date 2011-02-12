@@ -17,27 +17,47 @@
 
 package net.pterodactylus.util.graph;
 
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * TODO
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public interface Node<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
+public abstract class AbstractNode<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> implements Node<G, N, E, R> {
 
-	public G getGraph();
+	private transient final G graph;
+	private final Map<String, Object> properties = new HashMap<String, Object>();
 
-	public Node set(String key, Object value);
+	protected AbstractNode(G graph) {
+		this.graph = graph;
+	}
 
-	public Object get(String key);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public G getGraph() {
+		return graph;
+	}
 
-	public Node link(N otherNode, R relationship);
+	@Override
+	public Node set(String key, Object value) {
+		properties.put(key, value);
+		return this;
+	}
 
-	public Node unlink(N otherNode, R relationship);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Object get(String key) {
+		return properties.get(key);
+	}
 
-	public Set<E> getIncomingLinks(R relationship);
-
-	public Set<E> getOutgoingLinks(R relationship);
+	protected Map<String, Object> getProperties() {
+		return properties;
+	}
 
 }

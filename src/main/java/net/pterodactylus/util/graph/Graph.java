@@ -17,127 +17,19 @@
 
 package net.pterodactylus.util.graph;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import net.pterodactylus.util.validation.Validation;
-
 /**
  * TODO
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public class Graph {
+public interface Graph<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
 
-	private static long nodeCounter = 0;
-	private static long edgeCounter = 0;
+	public N getRootNode();
 
-	private final Set<Node> nodes = new HashSet<Node>();
-	private final Map<Node, Set<Edge>> nodeEdges = new HashMap<Node, Set<Edge>>();
+	public N createNode();
 
-	//
-	// ACCESSORS
-	//
+	public Relationship getRelationship(String name);
 
-	public Set<Edge> getEdgesFrom(Node node, Relationship relationship) {
-		Set<Edge> nodeEdges = this.nodeEdges.get(node);
-		if (nodeEdges == null) {
-			return Collections.emptySet();
-		}
-		for (Iterator<Edge> edgeIterator = nodeEdges.iterator(); edgeIterator.hasNext();) {
-			if (!edgeIterator.next().getStartNode().equals(node)) {
-				edgeIterator.remove();
-			}
-		}
-		return nodeEdges;
-	}
-
-	public Set<Edge> getEdgesTo(Node node, Relationship relationship) {
-		Set<Edge> nodeEdges = this.nodeEdges.get(node);
-		if (nodeEdges == null) {
-			return Collections.emptySet();
-		}
-		for (Iterator<Edge> edgeIterator = nodeEdges.iterator(); edgeIterator.hasNext();) {
-			if (!edgeIterator.next().getEndNode().equals(node)) {
-				edgeIterator.remove();
-			}
-		}
-		return nodeEdges;
-	}
-
-	//
-	// ACTIONS
-	//
-
-	/* TODO - NodeFactory? */
-	public Node createNode() {
-		Node node = new Node(nodeCounter++, this);
-		nodes.add(node);
-		return node;
-	}
-
-	public void removeNode(Node node) {
-		Validation.begin().isNotNull("Node", node).check().isEqual("Node’s Graph", node.getGraph(), this).check();
-		removeEdges(node);
-		nodes.remove(node);
-		nodeEdges.remove(node);
-	}
-
-	public Edge createEdge(Node startNode, Node endNode, Relationship relationship) {
-		Edge edge = new Edge(edgeCounter++, this, startNode, endNode, relationship);
-		Set<Edge> startNodeEdges = nodeEdges.get(startNode);
-		if (startNodeEdges == null) {
-			startNodeEdges = new HashSet<Edge>();
-			nodeEdges.put(startNode, startNodeEdges);
-		}
-		startNodeEdges.add(edge);
-		Set<Edge> endNodeEdges = nodeEdges.get(endNode);
-		if (endNodeEdges == null) {
-			endNodeEdges = new HashSet<Edge>();
-			nodeEdges.put(endNode, endNodeEdges);
-		}
-		endNodeEdges.add(edge);
-		return edge;
-	}
-
-	public void removeEdge(Node startNode, Node endNode, Relationship relationship) {
-		Set<Edge> nodeEdges = this.nodeEdges.get(startNode);
-		if (nodeEdges != null) {
-			for (Iterator<Edge> edgeIterator = nodeEdges.iterator(); edgeIterator.hasNext();) {
-				Edge edge = edgeIterator.next();
-				if (edge.getStartNode().equals(startNode) && edge.getEndNode().equals(endNode) && edge.getRelationship().equals(relationship)) {
-					edgeIterator.remove();
-				}
-			}
-		}
-		nodeEdges = this.nodeEdges.get(endNode);
-		if (nodeEdges != null) {
-			for (Iterator<Edge> edgeIterator = nodeEdges.iterator(); edgeIterator.hasNext();) {
-				Edge edge = edgeIterator.next();
-				if (edge.getStartNode().equals(startNode) && edge.getEndNode().equals(endNode) && edge.getRelationship().equals(relationship)) {
-					edgeIterator.remove();
-				}
-			}
-		}
-	}
-
-	public void removeEdges(Node node) {
-		Set<Edge> nodeEdges = this.nodeEdges.remove(node);
-		if (nodeEdges == null) {
-			return;
-		}
-		for (Edge edge : nodeEdges) {
-			if (edge.getStartNode().equals(node)) {
-				removeEdge(node, edge.getEndNode(), edge.getRelationship());
-			}
-			if (edge.getEndNode().equals(node)) {
-				removeEdge(edge.getStartNode(), node, edge.getRelationship());
-			}
-		}
-	}
+	public void removeNode(N node);
 
 }

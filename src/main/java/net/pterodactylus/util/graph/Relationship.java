@@ -17,11 +17,13 @@
 
 package net.pterodactylus.util.graph;
 
+
 /**
  * TODO
- *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public class Relationship {
+public interface Relationship<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
+
+	public String getName();
 
 }

@@ -1,5 +1,5 @@
 /*
- * utils.graph - Edge.java - Copyright © 2011 David Roden
+ * utils.graph - Store.java - Copyright © 2011 David Roden
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,13 @@
 
 package net.pterodactylus.util.graph;
 
+
 /**
  * TODO
- *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public interface Edge<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
+public interface Store<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
 
-	public Graph getGraph();
-
-	public N getStartNode();
-
-	public N getEndNode();
-
-	public Relationship getRelationship();
+	public G getGraph();
 
 }
