@@ -128,7 +128,7 @@ class DiskGraph implements Graph {
 	 * @param node
 	 *            The node to store
 	 */
-	public void storeNode(DiskNode node) {
+	void storeNode(DiskNode node) {
 		store.storeNode(node);
 	}
 
@@ -153,7 +153,7 @@ class DiskGraph implements Graph {
 	 *            The relationship of the nodes
 	 * @return The newly created edge
 	 */
-	public DiskEdge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
+	DiskEdge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
 		return store.createEdge(startNode, endNode, relationship);
 	}
 
@@ -167,7 +167,7 @@ class DiskGraph implements Graph {
 	 * @param relationship
 	 *            The relationship of the nodes
 	 */
-	public void removeEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
+	void removeEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
 		store.removeEdge(startNode, endNode, relationship);
 	}
 
