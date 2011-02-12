@@ -34,19 +34,29 @@ import net.pterodactylus.util.graph.StoreException;
 import net.pterodactylus.util.io.Closer;
 
 /**
- * TODO
+ * Storage for {@link Storable}s. The storage persists the objects to a data
+ * file, using a second index file to keep track of allocated blocks.
  *
+ * @param <T>
+ *            The type of the stored object
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public class Storage<T extends Storable> implements Closeable {
 
+	/** The internal block size. */
 	private static final int BLOCK_SIZE = 512;
 
+	/** Factory for {@link Storable}s. */
 	private final Storable.Factory<T> factory;
 
+	/** The index file. */
 	private final RandomAccessFile indexFile;
+
+	/** The data file. */
 	private final RandomAccessFile dataFile;
 
+	/** Lock for synchronization. */
+	@SuppressWarnings("unused")
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
 	/** The directory entries in on-disk order. */
@@ -61,6 +71,18 @@ public class Storage<T extends Storable> implements Closeable {
 	/** Keeps track of allocated data blocks. */
 	private final BitSet allocations = new BitSet();
 
+	/**
+	 * Creates a new storage.
+	 *
+	 * @param factory
+	 *            The factory that creates the objects
+	 * @param directory
+	 *            The directory to store the files in
+	 * @param name
+	 *            The base name of the files
+	 * @throws FileNotFoundException
+	 *             if the directory can not be found
+	 */
 	public Storage(Storable.Factory<T> factory, File directory, String name) throws FileNotFoundException {
 		this.factory = factory;
 		indexFile = new RandomAccessFile(new File(directory, name + ".idx"), "rws");
@@ -71,6 +93,12 @@ public class Storage<T extends Storable> implements Closeable {
 	// ACTIONS
 	//
 
+	/**
+	 * Opens this storage.
+	 *
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
 	public void open() throws IOException {
 		long indexLength = indexFile.length();
 		if ((indexLength % 16) != 0) {
@@ -91,6 +119,16 @@ public class Storage<T extends Storable> implements Closeable {
 		}
 	}
 
+	/**
+	 * Adds a storable to this storage.
+	 *
+	 * @param storable
+	 *            The storable to store
+	 * @throws StoreException
+	 *             if a store error occurs
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
 	public void add(T storable) throws StoreException, IOException {
 		byte[] storableBytes = storable.getBuffer();
 		int storableLength = storableBytes.length;
@@ -137,10 +175,24 @@ public class Storage<T extends Storable> implements Closeable {
 		}
 	}
 
+	/**
+	 * Returns the number of storables in this storage.
+	 *
+	 * @return The number of storables
+	 */
 	public int size() {
 		return directoryEntries.size() - emptyDirectoryEntries.cardinality();
 	}
 
+	/**
+	 * Loads a storable.
+	 *
+	 * @param id
+	 *            The ID of the storable to load
+	 * @return The storable
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
 	public T load(long id) throws IOException {
 		Integer directoryIndex = idDirectoryIndexes.get(id);
 		if (directoryIndex == null) {
@@ -153,18 +205,42 @@ public class Storage<T extends Storable> implements Closeable {
 		return factory.restore(buffer);
 	}
 
+	/**
+	 * Returns the size of the directory. Note that this can be larger than
+	 * {@link #size()} because it also includes empty directory entries!
+	 *
+	 * @return The size of the directory
+	 */
 	public int getDirectorySize() {
 		return directoryEntries.size();
 	}
 
+	/**
+	 * Returns the allocation at the given directory index.
+	 *
+	 * @param directoryIndex
+	 *            The directory index
+	 * @return The allocation at the given index, or {@code null} if there is no
+	 *         allocation at the given index
+	 */
 	public Allocation getAllocation(int directoryIndex) {
 		return directoryEntries.get(directoryIndex);
 	}
 
+	/**
+	 * Removes a storable.
+	 *
+	 * @param storable
+	 *            The storable to remove
+	 */
 	public void remove(T storable) {
 		/* TODO */
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void close() {
 		Closer.close(indexFile);
 		Closer.close(dataFile);
@@ -174,6 +250,14 @@ public class Storage<T extends Storable> implements Closeable {
 	// PRIVATE METHODS
 	//
 
+	/**
+	 * Locates the first free region that is large enough to hold the given
+	 * number of blocks sequentially.
+	 *
+	 * @param blocks
+	 *            The number of blocks
+	 * @return The index at which the blocks can be stored
+	 */
 	public int findFreeRegion(int blocks) {
 		int currentBlock = -1;
 		while (true) {
@@ -189,6 +273,13 @@ public class Storage<T extends Storable> implements Closeable {
 	// STATIC METHODS
 	//
 
+	/**
+	 * Returns the number of blocks for the given number of bytes.
+	 *
+	 * @param size
+	 *            The size of the data
+	 * @return The numbers of blocks
+	 */
 	static int getBlocks(long size) {
 		if (size == 0) {
 			return 1;
