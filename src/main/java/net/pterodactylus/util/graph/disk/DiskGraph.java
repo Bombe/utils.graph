@@ -19,7 +19,6 @@ package net.pterodactylus.util.graph.disk;
 
 import java.util.Set;
 
-import net.pterodactylus.util.graph.Edge;
 import net.pterodactylus.util.graph.Graph;
 import net.pterodactylus.util.validation.Validation;
 
@@ -80,7 +79,7 @@ class DiskGraph implements Graph<DiskGraph, DiskNode, DiskEdge, DiskRelationship
 		store.removeNode(node);
 	}
 
-	public Edge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
+	public DiskEdge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
 		return store.createEdge(this, startNode, endNode, relationship);
 	}
 
