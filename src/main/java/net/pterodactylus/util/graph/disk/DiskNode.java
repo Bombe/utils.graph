@@ -20,11 +20,9 @@ package net.pterodactylus.util.graph.disk;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.nio.ByteBuffer;
 import java.util.Set;
 
 import net.pterodactylus.util.graph.AbstractNode;
-import net.pterodactylus.util.graph.Node;
 import net.pterodactylus.util.graph.StoreException;
 import net.pterodactylus.util.io.Closer;
 import net.pterodactylus.util.validation.Validation;
@@ -116,7 +114,7 @@ public class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRe
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ByteBuffer getBuffer() throws StoreException {
+	public byte[] getBuffer() throws StoreException {
 		ByteArrayOutputStream contentStream = null;
 		ObjectOutputStream objectStream = null;
 		try {
@@ -130,10 +128,9 @@ public class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRe
 			Closer.close(contentStream);
 		}
 		byte[] propertiesBuffer = contentStream.toByteArray();
-		ByteBuffer buffer = ByteBuffer.allocate(8 + propertiesBuffer.length);
-		buffer.putLong(id);
-		buffer.put(propertiesBuffer);
-		buffer.flip();
+		byte[] buffer = new byte[propertiesBuffer.length + 8];
+		Storable.Utils.putLong(id, buffer, 0);
+		System.arraycopy(propertiesBuffer, 0, buffer, 8, propertiesBuffer.length);
 		return buffer;
 	}
 

@@ -17,8 +17,6 @@
 
 package net.pterodactylus.util.graph.disk;
 
-import java.nio.ByteBuffer;
-
 import net.pterodactylus.util.graph.StoreException;
 
 class Allocation implements Storable {
@@ -51,13 +49,12 @@ class Allocation implements Storable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ByteBuffer getBuffer() throws StoreException {
-		ByteBuffer content = ByteBuffer.allocate(16);
-		content.putLong(id);
-		content.putInt(position);
-		content.putInt(size);
-		content.flip();
-		return content;
+	public byte[] getBuffer() throws StoreException {
+		byte[] buffer = new byte[16];
+		Storable.Utils.putLong(id, buffer, 0);
+		Storable.Utils.putInt(position, buffer, 8);
+		Storable.Utils.putInt(size, buffer, 12);
+		return buffer;
 	}
 
 	/**
@@ -74,8 +71,8 @@ class Allocation implements Storable {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Allocation restore(ByteBuffer buffer) {
-			return new Allocation(buffer.getLong(), buffer.getInt(), buffer.getInt());
+		public Allocation restore(byte[] buffer) {
+			return new Allocation(Storable.Utils.getLong(buffer, 0), Storable.Utils.getInt(buffer, 8), Storable.Utils.getInt(buffer, 12));
 		}
 
 	}

@@ -17,8 +17,6 @@
 
 package net.pterodactylus.util.graph.disk;
 
-import java.nio.ByteBuffer;
-
 import net.pterodactylus.util.graph.StoreException;
 
 /**
@@ -30,11 +28,11 @@ public interface Storable {
 
 	public long getId();
 
-	public ByteBuffer getBuffer() throws StoreException;
+	public byte[] getBuffer() throws StoreException;
 
 	public static interface Factory<T> {
 
-		public T restore(ByteBuffer buffer);
+		public T restore(byte[] buffer);
 
 	}
 

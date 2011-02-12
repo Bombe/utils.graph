@@ -17,8 +17,6 @@
 
 package net.pterodactylus.util.graph.disk;
 
-import java.nio.ByteBuffer;
-
 import net.pterodactylus.util.graph.DefaultRelationship;
 import net.pterodactylus.util.graph.StoreException;
 
@@ -56,14 +54,15 @@ public class DiskRelationship extends DefaultRelationship<DiskGraph, DiskNode, D
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ByteBuffer getBuffer() throws StoreException {
-		ByteBuffer buffer = ByteBuffer.allocate(12 + getName().length() * 2);
-		buffer.putLong(id);
-		buffer.putInt(getName().toCharArray().length);
+	public byte[] getBuffer() throws StoreException {
+		byte[] buffer = new byte[12 + getName().length() * 2];
+		Storable.Utils.putLong(id, buffer, 0);
+		Storable.Utils.putInt(getName().length(), buffer, 8);
+		int index = 0;
 		for (char c : getName().toCharArray()) {
-			buffer.putChar(c);
+			Storable.Utils.putChar(c, buffer, 12 + index * 2);
+			++index;
 		}
-		buffer.flip();
 		return buffer;
 	}
 

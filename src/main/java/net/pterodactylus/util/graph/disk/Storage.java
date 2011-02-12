@@ -22,9 +22,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -84,11 +81,12 @@ public class Storage<T> implements Closeable {
 		if ((indexLength % 16) != 0) {
 			throw new IOException("Invalid Index Length: " + indexLength);
 		}
-		FileChannel indexChannel = indexFile.getChannel();
-		ByteBuffer indexBuffer = indexChannel.map(MapMode.READ_ONLY, 0, indexFile.length());
-		int directoryIndex = 0;
-		while (indexBuffer.hasRemaining()) {
-			Allocation allocation = Allocation.FACTORY.restore(indexBuffer);
+//		FileChannel indexChannel = indexFile.getChannel();
+//		ByteBuffer indexBuffer = indexChannel.map(MapMode.READ_ONLY, 0, indexFile.length());
+		for (int directoryIndex = 0; directoryIndex < (indexLength / 16); ++directoryIndex) {
+			byte[] allocationBuffer = new byte[16];
+			indexFile.readFully(allocationBuffer);
+			Allocation allocation = Allocation.FACTORY.restore(allocationBuffer);
 			if ((allocation.getId() == 0) && (allocation.getPosition() == 0) && (allocation.getSize() == 0)) {
 				emptyDirectoryEntries.set(directoryIndex);
 				directoryEntries.add(null);
@@ -101,8 +99,8 @@ public class Storage<T> implements Closeable {
 	}
 
 	public void add(Storable storable) throws StoreException, IOException {
-		ByteBuffer storableBytes = storable.getBuffer();
-		int storableLength = storableBytes.remaining();
+		byte[] storableBytes = storable.getBuffer();
+		int storableLength = storableBytes.length;
 //		System.out.println("Storing " + storableLength + " bytes…");
 		int blocks = getBlocks(storableLength);
 //		System.out.println("Storing " + blocks + " Blocks.");
@@ -115,10 +113,12 @@ public class Storage<T> implements Closeable {
 			dataFile.setLength(position * BLOCK_SIZE + storableLength);
 		}
 //		System.out.println("Storing " + name + ":" + storable.getId() + " @ "+ position + " for " + storableLength + " bytes.");
-		FileChannel fileChannel = dataFile.getChannel();
-		ByteBuffer buffer = fileChannel.map(MapMode.READ_WRITE, position * BLOCK_SIZE, storableLength);
-		buffer.put(storableBytes);
-		fileChannel.force(true);
+		dataFile.seek(position * BLOCK_SIZE);
+		dataFile.write(storableBytes);
+//		FileChannel fileChannel = dataFile.getChannel();
+//		ByteBuffer buffer = fileChannel.map(MapMode.READ_WRITE, position * BLOCK_SIZE, storableLength);
+//		buffer.put(storableBytes);
+//		fileChannel.force(true);
 
 		/* now directory entry. */
 		int oldIndex = -1;
@@ -145,16 +145,20 @@ public class Storage<T> implements Closeable {
 		idDirectoryIndexes.put(storable.getId(), directoryIndex);
 
 		/* now write directory to disk. */
-		fileChannel = indexFile.getChannel();
-		buffer = fileChannel.map(MapMode.READ_WRITE, directoryIndex * 16, 16);
-		buffer.put(allocation.getBuffer());
+		indexFile.seek(directoryIndex*16);
+		indexFile.write(allocation.getBuffer());
+//		fileChannel = indexFile.getChannel();
+//		buffer = fileChannel.map(MapMode.READ_WRITE, directoryIndex * 16, 16);
+//		buffer.put(allocation.getBuffer());
 
 		/* if an old index was deleted, wipe it. */
 		if (oldIndex > -1) {
-			buffer = fileChannel.map(MapMode.READ_WRITE, oldIndex * 16, 16);
-			buffer.put(new byte[16]);
+			indexFile.seek(oldIndex * 16);
+			indexFile.write(new byte[16]);
+//			buffer = fileChannel.map(MapMode.READ_WRITE, oldIndex * 16, 16);
+//			buffer.put(new byte[16]);
 		}
-		fileChannel.force(true);
+//		fileChannel.force(true);
 	}
 
 	public int size() {
@@ -169,9 +173,12 @@ public class Storage<T> implements Closeable {
 			return null;
 		}
 		Allocation allocation = directoryEntries.get(directoryIndex);
-		FileChannel channel = dataFile.getChannel();
+		byte[] buffer = new byte[allocation.getSize()];
+		dataFile.seek(allocation.getPosition()*BLOCK_SIZE);
+		dataFile.readFully(buffer);
+//		FileChannel channel = dataFile.getChannel();
 //		System.out.println("allocation: " + allocation);
-		ByteBuffer buffer = channel.map(MapMode.READ_ONLY, allocation.getPosition() * BLOCK_SIZE, allocation.getSize());
+//		ByteBuffer buffer = channel.map(MapMode.READ_ONLY, allocation.getPosition() * BLOCK_SIZE, allocation.getSize());
 		return factory.restore(buffer);
 	}
 

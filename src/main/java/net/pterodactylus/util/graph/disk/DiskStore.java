@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -287,11 +286,13 @@ public class DiskStore implements Store {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public DiskRelationship restore(ByteBuffer buffer) {
-			long id = buffer.getLong();
-			int nameLength = buffer.getInt();
+		public DiskRelationship restore(byte[] buffer) {
+			long id = Storable.Utils.getLong(buffer, 0);
+			int nameLength = Storable.Utils.getInt(buffer, 8);
 			char[] nameCharacters = new char[nameLength];
-			buffer.asCharBuffer().get(nameCharacters);
+			for (int index = 0; index < nameLength; ++index) {
+				nameCharacters[index] = Storable.Utils.getChar(buffer, 12 + index * 2);
+			}
 			return new DiskRelationship(id, new String(nameCharacters));
 		}
 
@@ -309,13 +310,11 @@ public class DiskStore implements Store {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public DiskNode restore(ByteBuffer buffer) {
-			long id = buffer.getLong();
+		public DiskNode restore(byte[] buffer) {
+			long id = Storable.Utils.getLong(buffer, 0);
 			DiskNode node = new DiskNode(id, store.graph);
-			byte[] propertiesBuffer = new byte[buffer.remaining()];
-			buffer.get(propertiesBuffer);
 			try {
-				ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(propertiesBuffer));
+				ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(buffer, 8, buffer.length - 8));
 				Map<String, Object> properties = (Map<String, Object>) objectInputStream.readObject();
 				for (Entry<String, Object> property : properties.entrySet()) {
 					node.set(property.getKey(), property.getValue());
@@ -392,18 +391,18 @@ public class DiskStore implements Store {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ByteBuffer getBuffer() throws StoreException {
-			ByteBuffer buffer = ByteBuffer.allocate(12 + size() * 8 * 4);
-			buffer.putLong(nodeId);
-			buffer.putInt(size());
-//			System.out.println("Storing " + size() + " NodeEdges in " + buffer.capacity() + " bytes.");
+		public byte[] getBuffer() throws StoreException {
+			byte[] buffer = new byte[12 + size() * 8 * 4];
+			Storable.Utils.putLong(nodeId, buffer, 0);
+			Storable.Utils.putInt(size(), buffer, 8);
+// System.out.println("Storing " + size() + " NodeEdges in " + buffer.capacity()
+// + " bytes.");
 			for (int index = 0; index < size(); ++index) {
-				buffer.putLong(edges.get(index));
-				buffer.putLong(startNodes.get(index));
-				buffer.putLong(endNodes.get(index));
-				buffer.putLong(relationships.get(index));
+				Storable.Utils.putLong(edges.get(index), buffer, 12 + index * 32);
+				Storable.Utils.putLong(startNodes.get(index), buffer, 20 + index * 32);
+				Storable.Utils.putLong(endNodes.get(index), buffer, 28 + index * 32);
+				Storable.Utils.putLong(relationships.get(index), buffer, 36 + index * 32);
 			}
-			buffer.flip();
 			return buffer;
 		}
 
@@ -415,16 +414,17 @@ public class DiskStore implements Store {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeEdgeList restore(ByteBuffer buffer) {
-			long nodeId = buffer.getLong();
+		public NodeEdgeList restore(byte[] buffer) {
+			long nodeId = Storable.Utils.getLong(buffer, 0);
 			NodeEdgeList nodeEdgeList = new NodeEdgeList(nodeId);
-			int size = buffer.getInt();
-//			System.out.println("Reading " + size + " NodeEdges, remaining bytes: " + buffer.remaining());
+			int size = Storable.Utils.getInt(buffer, 8);
+// System.out.println("Reading " + size + " NodeEdges, remaining bytes: " +
+// buffer.remaining());
 			for (int index = 0; index < size; ++index) {
-				long edgeId = buffer.getLong();
-				long startNodeId = buffer.getLong();
-				long endNodeId = buffer.getLong();
-				long relationshipId = buffer.getLong();
+				long edgeId = Storable.Utils.getLong(buffer, 12 + index * 32);
+				long startNodeId = Storable.Utils.getLong(buffer, 20 + index * 32);
+				long endNodeId = Storable.Utils.getLong(buffer, 28 + index * 32);
+				long relationshipId = Storable.Utils.getLong(buffer, 36 + index * 32);
 				nodeEdgeList.addEdge(edgeId, startNodeId, endNodeId, relationshipId);
 			}
 			return nodeEdgeList;
