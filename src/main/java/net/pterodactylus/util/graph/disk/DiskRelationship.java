@@ -18,25 +18,52 @@
 package net.pterodactylus.util.graph.disk;
 
 import net.pterodactylus.util.graph.DefaultRelationship;
+import net.pterodactylus.util.graph.Relationship;
 import net.pterodactylus.util.graph.StoreException;
 
 /**
- * TODO
+ * {@link Relationship} implementation that is used by {@link DiskStore}. It
+ * adds an ID to the relationship that is used when comparing relationships with
+ * {@link Object#equals(Object)}.
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 class DiskRelationship extends DefaultRelationship<DiskGraph, DiskNode, DiskEdge, DiskRelationship> implements Storable {
 
+	/** The ID of the relationship. */
 	private final long id;
 
+	/**
+	 * Creates a new relationship.
+	 *
+	 * @param id
+	 *            The ID of the relationship
+	 * @param name
+	 *            The name of the relationship
+	 */
 	DiskRelationship(long id, String name) {
 		super(name);
 		this.id = id;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public long getId() {
 		return id;
+	}
+
+	//
+	// OBJECT METHODS
+	//
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		return (int) ((id >> 32) ^ (id & 0xffffffff));
 	}
 
 	/**
@@ -51,16 +78,8 @@ class DiskRelationship extends DefaultRelationship<DiskGraph, DiskNode, DiskEdge
 	}
 
 	//
-	// OBJECT METHODS
+	// INTERFACE Storable
 	//
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
-		return (int) ((id >> 32) ^ (id & 0xffffffff));
-	}
 
 	/**
 	 * {@inheritDoc}
