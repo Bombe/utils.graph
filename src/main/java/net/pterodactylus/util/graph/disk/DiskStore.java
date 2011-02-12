@@ -29,9 +29,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.pterodactylus.util.graph.GraphException;
 import net.pterodactylus.util.graph.Store;
-import net.pterodactylus.util.graph.StoreException;
-import net.pterodactylus.util.graph.disk.Storable.Factory;
+import net.pterodactylus.util.storage.Allocation;
+import net.pterodactylus.util.storage.Factory;
+import net.pterodactylus.util.storage.Storable;
+import net.pterodactylus.util.storage.Storage;
+import net.pterodactylus.util.storage.StorageException;
 
 /**
  * {@link Store} implementation that stores the complete graph on disk.
@@ -81,11 +85,11 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	 *
 	 * @param directory
 	 *            The directory to create the store in or to load the store from
-	 * @throws StoreException
+	 * @throws GraphException
 	 *             if the store can not be created in or loaded from the given
 	 *             directory
 	 */
-	public DiskStore(String directory) throws StoreException {
+	public DiskStore(String directory) throws GraphException {
 		this(new File(directory));
 	}
 
@@ -95,13 +99,13 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	 *
 	 * @param directory
 	 *            The directory to create the store in or to load the store from
-	 * @throws StoreException
+	 * @throws GraphException
 	 *             if the store can not be created in or loaded from the given
 	 *             directory
 	 */
-	public DiskStore(File directory) throws StoreException {
+	public DiskStore(File directory) throws GraphException {
 		if (!directory.exists() || !directory.isDirectory() || !directory.canWrite()) {
-			throw new StoreException("“" + directory + "” is not a writable directory.");
+			throw new GraphException("“" + directory + "” is not a writable directory.");
 		}
 		try {
 			relationshipStorage = new Storage<DiskRelationship>(DISK_RELATIONSHIP_FACTORY, directory, "relationships");
@@ -109,7 +113,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			nodeEdgeListStorage = new Storage<NodeEdgeList>(NODE_EDGE_LIST_FACTORY, directory, "edges");
 			loadDiskStore();
 		} catch (IOException ioe1) {
-			throw new StoreException("Could not create store in or load store from “" + directory + "”!", ioe1);
+			throw new GraphException("Could not create store in or load store from “" + directory + "”!", ioe1);
 		}
 	}
 
@@ -168,7 +172,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	void storeNode(DiskNode node) {
 		try {
 			nodeStorage.add(node);
-		} catch (StoreException e) {
+		} catch (StorageException e) {
 			// TODO Auto-generated catch block
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -198,7 +202,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			return edge;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-		} catch (StoreException e) {
+		} catch (StorageException e) {
 			// TODO Auto-generated catch block
 		}
 		return null;
@@ -251,10 +255,10 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	 * @return The node-edge list for the given node
 	 * @throws IOException
 	 *             if an I/O error occurs
-	 * @throws StoreException
+	 * @throws StorageException
 	 *             if a store error occurs
 	 */
-	NodeEdgeList getNodeEdgeList(long nodeId) throws IOException, StoreException {
+	NodeEdgeList getNodeEdgeList(long nodeId) throws IOException, StorageException {
 		NodeEdgeList nodeEdges = nodeEdgeListStorage.load(nodeId);
 		if (nodeEdges == null) {
 			nodeEdges = new NodeEdgeList(nodeId);
@@ -284,7 +288,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			nodeEdgeListStorage.add(nodeEdges);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-		} catch (StoreException e) {
+		} catch (StorageException e) {
 			// TODO Auto-generated catch block
 		}
 	}
@@ -330,7 +334,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			relationships.put(name, relationship);
 			try {
 				relationshipStorage.add(relationship);
-			} catch (StoreException e) {
+			} catch (StorageException e) {
 				// TODO Auto-generated catch block
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -360,10 +364,10 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	 *
 	 * @throws IOException
 	 *             if an I/O error occurs
-	 * @throws StoreException
-	 *             if a store error occurs
+	 * @throws GraphException
+	 *             if a storage error occurs
 	 */
-	private void loadDiskStore() throws IOException, StoreException {
+	private void loadDiskStore() throws IOException, GraphException {
 
 		relationshipStorage.open();
 		nodeStorage.open();
@@ -612,7 +616,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		 * {@inheritDoc}
 		 */
 		@Override
-		public byte[] getBuffer() throws StoreException {
+		public byte[] getBuffer() {
 			byte[] buffer = new byte[12 + size() * 8 * 4];
 			Storable.Utils.putLong(nodeId, buffer, 0);
 			Storable.Utils.putInt(size(), buffer, 8);

@@ -19,7 +19,7 @@ package net.pterodactylus.util.graph.disk;
 
 import net.pterodactylus.util.graph.DefaultRelationship;
 import net.pterodactylus.util.graph.Relationship;
-import net.pterodactylus.util.graph.StoreException;
+import net.pterodactylus.util.storage.Storable;
 
 /**
  * {@link Relationship} implementation that is used by {@link DiskStore}. It
@@ -85,7 +85,7 @@ class DiskRelationship extends DefaultRelationship<DiskGraph, DiskNode, DiskEdge
 	 * {@inheritDoc}
 	 */
 	@Override
-	public byte[] getBuffer() throws StoreException {
+	public byte[] getBuffer() {
 		byte[] buffer = new byte[12 + getName().length() * 2];
 		Storable.Utils.putLong(id, buffer, 0);
 		Storable.Utils.putInt(getName().length(), buffer, 8);

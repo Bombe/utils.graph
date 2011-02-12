@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.pterodactylus.util.graph.disk.DiskStore;
+import net.pterodactylus.util.storage.StorageException;
 
 /**
  * TODO
@@ -36,7 +37,7 @@ public class SpeedTest {
 	private static final int EDGE_COUNT = NODE_COUNT * 10;
 	private static final int LINK_COUNT = 10000;
 
-	public static void main(String... arguments) throws StoreException, IOException {
+	public static void main(String... arguments) throws StorageException, IOException, GraphException {
 		DiskStore diskStore = new DiskStore(".");
 		Graph graph = diskStore.getGraph();
 		List<Node> nodes = new ArrayList<Node>();

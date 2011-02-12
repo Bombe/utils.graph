@@ -24,8 +24,9 @@ import java.util.Set;
 
 import net.pterodactylus.util.graph.AbstractNode;
 import net.pterodactylus.util.graph.Node;
-import net.pterodactylus.util.graph.StoreException;
 import net.pterodactylus.util.io.Closer;
+import net.pterodactylus.util.storage.Storable;
+import net.pterodactylus.util.storage.StorageException;
 import net.pterodactylus.util.validation.Validation;
 
 /**
@@ -140,7 +141,7 @@ class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelations
 	 * {@inheritDoc}
 	 */
 	@Override
-	public byte[] getBuffer() throws StoreException {
+	public byte[] getBuffer() throws StorageException {
 		ByteArrayOutputStream contentStream = null;
 		ObjectOutputStream objectStream = null;
 		try {
@@ -148,7 +149,7 @@ class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelations
 			objectStream = new ObjectOutputStream(contentStream);
 			objectStream.writeObject(getProperties());
 		} catch (IOException ioe1) {
-			throw new StoreException("Could not get bytes for DiskNode.", ioe1);
+			throw new StorageException("Could not get bytes for DiskNode.", ioe1);
 		} finally {
 			Closer.close(objectStream);
 			Closer.close(contentStream);
