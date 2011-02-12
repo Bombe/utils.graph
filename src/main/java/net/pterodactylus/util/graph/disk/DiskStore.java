@@ -86,12 +86,8 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		return node;
 	}
 
-	DiskNode getNode(long nodeId) {
-		try {
-			return nodeStorage.load(nodeId);
-		} catch (IOException ioe1) {
-			return null; /* TODO */
-		}
+	DiskNode getNode(long nodeId) throws IOException {
+		return nodeStorage.load(nodeId);
 	}
 
 	void removeNode(DiskNode node) {
