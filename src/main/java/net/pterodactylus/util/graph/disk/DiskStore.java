@@ -50,7 +50,6 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	private static long edgeCounter = 0;
 	private static long relationshipCounter = 0;
 
-	private final File directory;
 	private DiskGraph graph;
 	private final Map<String, DiskRelationship> relationships = new HashMap<String, DiskRelationship>();
 
