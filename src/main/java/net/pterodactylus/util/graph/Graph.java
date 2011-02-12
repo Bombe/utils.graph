@@ -28,8 +28,9 @@ public interface Graph<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, 
 
 	public N createNode();
 
-	public Relationship getRelationship(String name);
 
 	public void removeNode(N node);
+
+	public R getRelationship(String name);
 
 }

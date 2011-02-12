@@ -21,7 +21,6 @@ import java.util.Set;
 
 import net.pterodactylus.util.graph.Edge;
 import net.pterodactylus.util.graph.Graph;
-import net.pterodactylus.util.graph.Relationship;
 import net.pterodactylus.util.validation.Validation;
 
 /**
@@ -62,7 +61,7 @@ public class DiskGraph implements Graph<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	// ACTIONS
 	//
 
-	public Relationship getRelationship(String name) {
+	public DiskRelationship getRelationship(String name) {
 		return store.getRelationship(name);
 	}
 
