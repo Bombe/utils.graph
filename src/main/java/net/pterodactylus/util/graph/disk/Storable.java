@@ -21,40 +21,122 @@ import net.pterodactylus.util.graph.StoreException;
 
 /**
  * TODO
+ * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
+ */
+/**
+ * Interface for objects that can write themselves to a byte array.
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public interface Storable {
 
+	/**
+	 * The ID of the object.
+	 *
+	 * @return The ID of the object
+	 */
 	public long getId();
 
+	/**
+	 * Writes the contents of this {@code Storable} to a byte array.
+	 *
+	 * @return The byte array with the content
+	 * @throws StoreException
+	 *             if a store error occurs
+	 */
 	public byte[] getBuffer() throws StoreException;
 
+	/**
+	 * Interface for factory classes that can create objects from a byte array.
+	 *
+	 * @param <T>
+	 *            The type of the object to create
+	 * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
+	 */
 	public static interface Factory<T> {
 
+		/**
+		 * Creates an object from the given byte array.
+		 *
+		 * @param buffer
+		 *            The byte array with the object’s contents
+		 * @return The object
+		 */
 		public T restore(byte[] buffer);
 
 	}
 
+	/**
+	 * Helper methods for populating and parsing byte arrays.
+	 *
+	 * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
+	 */
 	static class Utils {
 
+		/**
+		 * Returns a char from the byte array.
+		 *
+		 * @param buffer
+		 *            The byte array
+		 * @param position
+		 *            The position of the data
+		 * @return The char from the byte array
+		 */
 		public static char getChar(byte[] buffer, int position) {
 			return (char) (buffer[position + 0] | (buffer[position + 1] << 8));
 		}
 
+		/**
+		 * Returns an integer from the byte array.
+		 *
+		 * @param buffer
+		 *            The byte array
+		 * @param position
+		 *            The position of the data
+		 * @return The integer from the byte array
+		 */
 		public static int getInt(byte[] buffer, int position) {
 			return (buffer[position + 0] & 0xff) | ((buffer[position + 1] << 8) & 0xff00) | ((buffer[position + 2] << 16) & 0xff0000) | ((buffer[position + 3] << 24) & 0xff000000);
 		}
 
+		/**
+		 * Returns a long from the byte array.
+		 *
+		 * @param buffer
+		 *            The byte array
+		 * @param position
+		 *            The position of the data
+		 * @return The long from the byte array
+		 */
 		public static long getLong(byte[] buffer, int position) {
 			return (buffer[position + 0] & 0xff) | ((buffer[position + 1] << 8) & 0xff00) | ((buffer[position + 2] << 16) & 0xff0000) | ((buffer[position + 3] << 24) & 0xff000000) | ((buffer[position + 4] << 32) & 0xff00000000L) | ((buffer[position + 5] << 40) & 0xff0000000000L) | ((buffer[position + 6] << 48) & 0xff000000000000L) | ((buffer[position + 7] << 56) & 0xff00000000000000L);
 		}
 
+		/**
+		 * Stores a char in the byte array.
+		 *
+		 * @param value
+		 *            The char to store
+		 * @param buffer
+		 *            The byte array
+		 * @param position
+		 *            The position of the data
+		 */
 		public static void putChar(char value, byte[] buffer, int position) {
 			buffer[position + 0] = (byte) (value & 0xff);
 			buffer[position + 1] = (byte) ((value >>> 8) & 0xff);
 		}
 
+		/**
+		 * Stores an integer in the byte array.
+		 *
+		 * @param value
+		 *            The integer to store
+		 * @param buffer
+		 *            The byte array
+		 * @param position
+		 *            The position of the data
+		 */
 		public static void putInt(int value, byte[] buffer, int position) {
 			buffer[position + 0] = (byte) (value & 0xff);
 			buffer[position + 1] = (byte) ((value >>> 8) & 0xff);
@@ -62,6 +144,16 @@ public interface Storable {
 			buffer[position + 3] = (byte) ((value >>> 24) & 0xff);
 		}
 
+		/**
+		 * Stores a long in the byte array.
+		 *
+		 * @param value
+		 *            The long to store
+		 * @param bytes
+		 *            The byte array
+		 * @param position
+		 *            The position of the data
+		 */
 		public static void putLong(long value, byte[] bytes, int position) {
 			bytes[position + 0] = (byte) (value & 0xff);
 			bytes[position + 1] = (byte) ((value >>> 8) & 0xff);
