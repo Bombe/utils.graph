@@ -24,12 +24,12 @@ package net.pterodactylus.util.graph;
  */
 public interface Edge<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
 
-	public Graph getGraph();
+	public G getGraph();
 
 	public N getStartNode();
 
 	public N getEndNode();
 
-	public Relationship getRelationship();
+	public R getRelationship();
 
 }
