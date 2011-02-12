@@ -43,8 +43,10 @@ public interface Node {
 	 * @param value
 	 *            The value of the property
 	 * @return This node
+	 * @throws GraphException
+	 *             if the property can not be stored
 	 */
-	public Node set(String key, Object value);
+	public Node set(String key, Object value) throws GraphException;
 
 	/**
 	 * Returns the value of the property with the given key.
@@ -63,8 +65,10 @@ public interface Node {
 	 * @param relationship
 	 *            The relationship of the link
 	 * @return This node
+	 * @throws GraphException
+	 *             if the edge can not be created
 	 */
-	public Node link(Node otherNode, Relationship relationship);
+	public Node link(Node otherNode, Relationship relationship) throws GraphException;
 
 	/**
 	 * Removes the link to the given node with the given relationship.
@@ -74,8 +78,10 @@ public interface Node {
 	 * @param relationship
 	 *            The relationship of the link
 	 * @return This node
+	 * @throws GraphException
+	 *             if the edge can not be removed
 	 */
-	public Node unlink(Node otherNode, Relationship relationship);
+	public Node unlink(Node otherNode, Relationship relationship) throws GraphException;
 
 	/**
 	 * Returns all edges that have this node as the end node.
@@ -84,8 +90,10 @@ public interface Node {
 	 * @param relationship
 	 *            The relationship of the edges
 	 * @return The edges that have this node as the end node
+	 * @throws GraphException
+	 *             if the links can not be retrieved
 	 */
-	public Set<? extends Edge> getIncomingLinks(Relationship relationship);
+	public Set<? extends Edge> getIncomingLinks(Relationship relationship) throws GraphException;
 
 	/**
 	 * Returns all edges that have this node as the start node.
@@ -94,7 +102,9 @@ public interface Node {
 	 * @param relationship
 	 *            The relationship of the edges
 	 * @return The edges that have this node as the start node
+	 * @throws GraphException
+	 *             if the links can not be retrieved
 	 */
-	public Set<? extends Edge> getOutgoingLinks(Relationship relationship);
+	public Set<? extends Edge> getOutgoingLinks(Relationship relationship) throws GraphException;
 
 }

@@ -116,6 +116,8 @@ public class DiskStore implements Store {
 			loadDiskStore();
 		} catch (IOException ioe1) {
 			throw new GraphException("Could not create store in or load store from “" + directory + "”!", ioe1);
+		} catch (StorageException se1) {
+			throw new GraphException("Could not create store in or load store from “" + directory + "”!", se1);
 		}
 	}
 
@@ -127,8 +129,10 @@ public class DiskStore implements Store {
 	 * Creates a new node.
 	 *
 	 * @return The new node
+	 * @throws GraphException
+	 *             if the node can not be created
 	 */
-	DiskNode createNode() {
+	DiskNode createNode() throws GraphException {
 		DiskNode node = new DiskNode(nodeCounter++, graph);
 		storeNode(node);
 		return node;
@@ -140,11 +144,15 @@ public class DiskStore implements Store {
 	 * @param nodeId
 	 *            The ID of the node
 	 * @return The node, or {@code null} if there is no node with the given ID
-	 * @throws IOException
-	 *             if an I/O error occurs
+	 * @throws GraphException
+	 *             if the node can not be loaded
 	 */
-	DiskNode getNode(long nodeId) throws IOException {
-		return nodeStorage.load(nodeId);
+	DiskNode getNode(long nodeId) throws GraphException {
+		try {
+			return nodeStorage.load(nodeId);
+		} catch (StorageException se1) {
+			throw new GraphException("Could not load node:" + nodeId + "!", se1);
+		}
 	}
 
 	/**
@@ -152,15 +160,17 @@ public class DiskStore implements Store {
 	 *
 	 * @param node
 	 *            The node to remove
+	 * @throws GraphException
+	 *             if the node could not be removed
 	 */
-	void removeNode(DiskNode node) {
+	void removeNode(DiskNode node) throws GraphException {
 		NodeEdgeList nodeEdges;
 		try {
 			nodeEdges = nodeEdgeListStorage.load(node.getId());
 			nodeEdgeListStorage.remove(nodeEdges);
 			nodeStorage.remove(node);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (StorageException se1) {
+			throw new GraphException("Could not remove node: " + node, se1);
 		}
 	}
 
@@ -170,14 +180,14 @@ public class DiskStore implements Store {
 	 *
 	 * @param node
 	 *            The node to store
+	 * @throws GraphException
+	 *             if the node can not be stored
 	 */
-	void storeNode(DiskNode node) {
+	void storeNode(DiskNode node) throws GraphException {
 		try {
 			nodeStorage.add(node);
-		} catch (StorageException e) {
-			// TODO Auto-generated catch block
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (StorageException se1) {
+			throw new GraphException("Could not store node: " + node, se1);
 		}
 	}
 
@@ -191,8 +201,10 @@ public class DiskStore implements Store {
 	 * @param relationship
 	 *            The relationship between the two nodes
 	 * @return The new edge
+	 * @throws GraphException
+	 *             if the edge can not be created
 	 */
-	DiskEdge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
+	DiskEdge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
 		DiskEdge edge = new DiskEdge(edgeCounter++, graph, startNode, endNode, relationship);
 		try {
 			NodeEdgeList nodeEdges = getNodeEdgeList(startNode.getId());
@@ -202,12 +214,9 @@ public class DiskStore implements Store {
 			nodeEdges.addEdge(edge.getId(), startNode.getId(), endNode.getId(), relationship.getId());
 			nodeEdgeListStorage.add(nodeEdges);
 			return edge;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-		} catch (StorageException e) {
-			// TODO Auto-generated catch block
+		} catch (StorageException se1) {
+			throw new GraphException("Could not create edge for startNode: " + startNode + ", endNode: " + endNode + ", relationship: " + relationship + "!", se1);
 		}
-		return null;
 	}
 
 	/**
@@ -223,8 +232,10 @@ public class DiskStore implements Store {
 	 * @param relationship
 	 *            The relationship of the edge
 	 * @return The matching edges
+	 * @throws GraphException
+	 *             if the edges can not be loaded
 	 */
-	Set<DiskEdge> getEdges(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
+	Set<DiskEdge> getEdges(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
 		try {
 			NodeEdgeList nodeEdges = nodeEdgeListStorage.load((startNode != null) ? startNode.getId() : endNode.getId());
 			Set<DiskEdge> edges = new HashSet<DiskEdge>();
@@ -243,9 +254,8 @@ public class DiskStore implements Store {
 				edges.add(new DiskEdge(nodeEdges.getEdgeId(index), graph, loadedStartNode, loadedEndNode, relationship));
 			}
 			return edges;
-		} catch (IOException ioe1) {
-			/* TODO */
-			return null;
+		} catch (StorageException se1) {
+			throw new GraphException("Could not get edges for startNode: " + startNode + ", endNode: " + endNode + ", relationship: " + relationship + "!", se1);
 		}
 	}
 
@@ -255,12 +265,10 @@ public class DiskStore implements Store {
 	 * @param nodeId
 	 *            The ID of the node
 	 * @return The node-edge list for the given node
-	 * @throws IOException
-	 *             if an I/O error occurs
 	 * @throws StorageException
 	 *             if a store error occurs
 	 */
-	NodeEdgeList getNodeEdgeList(long nodeId) throws IOException, StorageException {
+	NodeEdgeList getNodeEdgeList(long nodeId) throws StorageException {
 		NodeEdgeList nodeEdges = nodeEdgeListStorage.load(nodeId);
 		if (nodeEdges == null) {
 			nodeEdges = new NodeEdgeList(nodeId);
@@ -278,8 +286,10 @@ public class DiskStore implements Store {
 	 *            The end node of the edge
 	 * @param relationship
 	 *            The relationship of the edge
+	 * @throws GraphException
+	 *             if the edge can not be removed
 	 */
-	void removeEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
+	void removeEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
 		try {
 			DiskEdge edge = getEdge(startNode, endNode, relationship);
 			NodeEdgeList nodeEdges = nodeEdgeListStorage.load(startNode.getId());
@@ -288,10 +298,8 @@ public class DiskStore implements Store {
 			nodeEdges = nodeEdgeListStorage.load(endNode.getId());
 			nodeEdges.removeEdge(edge.getId());
 			nodeEdgeListStorage.add(nodeEdges);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-		} catch (StorageException e) {
-			// TODO Auto-generated catch block
+		} catch (StorageException se1) {
+			throw new GraphException("Could not remove edge for startNode: " + startNode + ", endNode: " + endNode + ", relationship: " + relationship, se1);
 		}
 	}
 
@@ -305,8 +313,10 @@ public class DiskStore implements Store {
 	 * @param relationship
 	 *            The relationship between the nodes
 	 * @return The edge, or {@code null} if there is no such edge
+	 * @throws GraphException
+	 *             if the edge can not be loaded
 	 */
-	DiskEdge getEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
+	DiskEdge getEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
 		NodeEdgeList nodeEdges;
 		try {
 			nodeEdges = nodeEdgeListStorage.load(startNode.getId());
@@ -315,8 +325,8 @@ public class DiskStore implements Store {
 					return new DiskEdge(nodeEdges.getEdgeId(index), graph, startNode, endNode, relationship);
 				}
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (StorageException se1) {
+			throw new GraphException("Could not get edge for startNode: " + startNode + ", endNode: " + endNode + ", relationship: " + relationship + "!", se1);
 		}
 		return null;
 	}
@@ -328,18 +338,18 @@ public class DiskStore implements Store {
 	 * @param name
 	 *            The name of the relationship
 	 * @return The relationship with the given name
+	 * @throws GraphException
+	 *             if the relationship can not be created
 	 */
-	DiskRelationship getRelationship(String name) {
+	DiskRelationship getRelationship(String name) throws GraphException {
 		DiskRelationship relationship = relationships.get(name);
 		if (relationship == null) {
 			relationship = new DiskRelationship(relationshipCounter++, name);
 			relationships.put(name, relationship);
 			try {
 				relationshipStorage.add(relationship);
-			} catch (StorageException e) {
-				// TODO Auto-generated catch block
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			} catch (StorageException se1) {
+				throw new GraphException("Could not get relationship for name: " + name, se1);
 			}
 		}
 		return relationship;
@@ -368,8 +378,10 @@ public class DiskStore implements Store {
 	 *             if an I/O error occurs
 	 * @throws GraphException
 	 *             if a storage error occurs
+	 * @throws StorageException
+	 *             if a storage error occurs
 	 */
-	private void loadDiskStore() throws IOException, GraphException {
+	private void loadDiskStore() throws IOException, GraphException, StorageException {
 
 		relationshipStorage.open();
 		nodeStorage.open();

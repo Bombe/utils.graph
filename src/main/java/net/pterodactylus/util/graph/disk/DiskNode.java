@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.pterodactylus.util.graph.AbstractNode;
+import net.pterodactylus.util.graph.GraphException;
 import net.pterodactylus.util.graph.Node;
 import net.pterodactylus.util.graph.Relationship;
 import net.pterodactylus.util.io.Closer;
@@ -68,7 +69,7 @@ class DiskNode extends AbstractNode implements Storable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DiskNode set(String key, Object value) {
+	public DiskNode set(String key, Object value) throws GraphException {
 		super.set(key, value);
 		((DiskGraph) getGraph()).storeNode(this);
 		return this;
@@ -78,7 +79,7 @@ class DiskNode extends AbstractNode implements Storable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DiskNode link(Node otherNode, Relationship relationship) {
+	public DiskNode link(Node otherNode, Relationship relationship) throws GraphException {
 		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isInstanceOf("Other Node", otherNode, DiskNode.class).isInstanceOf("Relationship", relationship, DiskRelationship.class).isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
 		((DiskGraph) getGraph()).createEdge(this, (DiskNode) otherNode, (DiskRelationship) relationship);
 		return this;
@@ -88,7 +89,7 @@ class DiskNode extends AbstractNode implements Storable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DiskNode unlink(Node otherNode, Relationship relationship) {
+	public DiskNode unlink(Node otherNode, Relationship relationship) throws GraphException {
 		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isInstanceOf("Other Node", otherNode, DiskNode.class).isInstanceOf("Relationship", relationship, DiskRelationship.class).isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
 		((DiskGraph) getGraph()).removeEdge(this, (DiskNode) otherNode, (DiskRelationship) relationship);
 		return this;
@@ -98,7 +99,7 @@ class DiskNode extends AbstractNode implements Storable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Set<DiskEdge> getIncomingLinks(Relationship relationship) {
+	public Set<DiskEdge> getIncomingLinks(Relationship relationship) throws GraphException {
 		Validation.begin().isNotNull("Relationship", relationship).check().isInstanceOf("Relationship", relationship, DiskRelationship.class).check();
 		return ((DiskGraph) getGraph()).getEdgesTo(this, (DiskRelationship) relationship);
 	}
@@ -107,7 +108,7 @@ class DiskNode extends AbstractNode implements Storable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Set<DiskEdge> getOutgoingLinks(Relationship relationship) {
+	public Set<DiskEdge> getOutgoingLinks(Relationship relationship) throws GraphException {
 		Validation.begin().isNotNull("Relationship", relationship).check().isInstanceOf("Relationship", relationship, DiskRelationship.class).check();
 		return ((DiskGraph) getGraph()).getEdgesFrom(this, (DiskRelationship) relationship);
 	}

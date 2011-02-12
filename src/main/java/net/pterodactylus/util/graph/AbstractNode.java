@@ -59,7 +59,7 @@ public abstract class AbstractNode implements Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Node set(String key, Object value) {
+	public Node set(String key, Object value) throws GraphException {
 		properties.put(key, value);
 		return this;
 	}

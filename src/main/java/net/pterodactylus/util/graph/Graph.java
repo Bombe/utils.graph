@@ -37,8 +37,10 @@ public interface Graph {
 	 * nodes but is already persisted.
 	 *
 	 * @return The new node
+	 * @throws GraphException
+	 *             if the node can not be created
 	 */
-	public Node createNode();
+	public Node createNode() throws GraphException;
 
 	/**
 	 * Removes this node from the graph. This will also remove all edges that
@@ -46,8 +48,10 @@ public interface Graph {
 	 *
 	 * @param node
 	 *            The node to remove
+	 * @throws GraphException
+	 *             if the node can not be removed
 	 */
-	public void removeNode(Node node);
+	public void removeNode(Node node) throws GraphException;
 
 	/**
 	 * Returns the relationship with the given name. If no relationship with the
@@ -56,7 +60,9 @@ public interface Graph {
 	 * @param name
 	 *            The name of the relationship
 	 * @return The relationship with the given name
+	 * @throws GraphException
+	 *             if the relationship can not be created
 	 */
-	public Relationship getRelationship(String name);
+	public Relationship getRelationship(String name) throws GraphException;
 
 }
