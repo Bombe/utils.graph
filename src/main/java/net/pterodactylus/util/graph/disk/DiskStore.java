@@ -139,7 +139,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			NodeEdgeList nodeEdges = nodeEdgeListStorage.load((startNode != null) ? startNode.getId() : endNode.getId());
 			Set<DiskEdge> edges = new HashSet<DiskEdge>();
 			for (int index = 0, size = nodeEdges.size(); index < size; ++index) {
-				if ((relationship != null) && (nodeEdges.getRelationshipId(index) != relationship.getId())) {
+				if (nodeEdges.getRelationshipId(index) != relationship.getId()) {
 					continue;
 				}
 				if ((startNode != null) && (nodeEdges.getStartNodeId(index) != startNode.getId())) {
