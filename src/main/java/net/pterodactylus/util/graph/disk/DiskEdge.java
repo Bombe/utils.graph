@@ -17,8 +17,6 @@
 
 package net.pterodactylus.util.graph.disk;
 
-import java.nio.ByteBuffer;
-
 import net.pterodactylus.util.graph.AbstractEdge;
 
 /**
@@ -26,7 +24,7 @@ import net.pterodactylus.util.graph.AbstractEdge;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public class DiskEdge extends AbstractEdge<DiskGraph, DiskNode, DiskEdge, DiskRelationship> implements Storable {
+public class DiskEdge extends AbstractEdge<DiskGraph, DiskNode, DiskEdge, DiskRelationship> {
 
 	private final long id;
 
@@ -37,23 +35,6 @@ public class DiskEdge extends AbstractEdge<DiskGraph, DiskNode, DiskEdge, DiskRe
 
 	public long getId() {
 		return id;
-	}
-
-	//
-	// INTERFACE Storable
-	//
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ByteBuffer getBuffer() {
-		ByteBuffer content = ByteBuffer.allocate(24);
-		content.putLong((getStartNode()).getId());
-		content.putLong((getEndNode()).getId());
-		content.putLong((getRelationship()).getId());
-		content.flip();
-		return content;
 	}
 
 	//
@@ -77,43 +58,6 @@ public class DiskEdge extends AbstractEdge<DiskGraph, DiskNode, DiskEdge, DiskRe
 			return ((DiskEdge) object).id == id;
 		}
 		return super.equals(object);
-	}
-
-	public static class EdgeShell {
-
-		private final long startNodeId;
-		private final long endNodeId;
-		private final long relationshipId;
-
-		public EdgeShell(long startNodeId, long endNodeId, long relationshipId) {
-			this.startNodeId = startNodeId;
-			this.endNodeId = endNodeId;
-			this.relationshipId = relationshipId;
-		}
-
-		public long getStartNodeId() {
-			return startNodeId;
-		}
-
-		public long getEndNodeId() {
-			return endNodeId;
-		}
-
-		public long getRelationshipId() {
-			return relationshipId;
-		}
-	}
-
-	public static class Factory implements Storable.Factory<EdgeShell> {
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public EdgeShell restore(ByteBuffer buffer) {
-			return new EdgeShell(buffer.getLong(), buffer.getLong(), buffer.getLong());
-		}
-
 	}
 
 }
