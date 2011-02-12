@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.pterodactylus.util.graph.Graph;
 import net.pterodactylus.util.graph.Store;
 import net.pterodactylus.util.graph.StoreException;
 import net.pterodactylus.util.graph.disk.Storable.Factory;
