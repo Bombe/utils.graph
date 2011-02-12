@@ -116,7 +116,7 @@ public class DiskStore implements Store {
 		}
 	}
 
-	DiskEdge createEdge(DiskGraph graph, DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
+	DiskEdge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
 		DiskEdge edge = new DiskEdge(edgeCounter++, graph, startNode, endNode, relationship);
 		try {
 			NodeEdgeList nodeEdges = getNodeEdgeList(startNode.getId());

@@ -153,7 +153,7 @@ class DiskGraph implements Graph<DiskGraph, DiskNode, DiskEdge, DiskRelationship
 	 * @return The newly created edge
 	 */
 	public DiskEdge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
-		return store.createEdge(this, startNode, endNode, relationship);
+		return store.createEdge(startNode, endNode, relationship);
 	}
 
 	/**
