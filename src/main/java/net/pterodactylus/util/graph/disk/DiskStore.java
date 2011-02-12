@@ -19,7 +19,6 @@ package net.pterodactylus.util.graph.disk;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
@@ -60,22 +59,21 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	private final Storage<DiskNode> nodeStorage;
 	private final Storage<DiskRelationship> relationshipStorage;
 
-	public DiskStore(String directory) throws StoreException, FileNotFoundException {
+	public DiskStore(String directory) throws StoreException {
 		this(new File(directory));
 	}
 
-	public DiskStore(File directory) throws StoreException, FileNotFoundException {
+	public DiskStore(File directory) throws StoreException {
 		if (!directory.exists() || !directory.isDirectory() || !directory.canWrite()) {
 			throw new StoreException("“" + directory + "” is not a writable directory.");
 		}
-		this.directory = directory;
-		relationshipStorage = new Storage(DISK_RELATIONSHIP_FACTORY, directory, "relationships");
-		nodeStorage = new Storage<DiskNode>(DISK_NODE_FACTORY, directory, "nodes");
-		nodeEdgeListStorage = new Storage<NodeEdgeList>(NODE_EDGE_LIST_FACTORY, directory, "edges");
 		try {
+			relationshipStorage = new Storage<DiskRelationship>(DISK_RELATIONSHIP_FACTORY, directory, "relationships");
+			nodeStorage = new Storage<DiskNode>(DISK_NODE_FACTORY, directory, "nodes");
+			nodeEdgeListStorage = new Storage<NodeEdgeList>(NODE_EDGE_LIST_FACTORY, directory, "edges");
 			loadDiskStore();
 		} catch (IOException ioe1) {
-			// TODO Auto-generated catch block
+			throw new StoreException("Could not create store in or load store from “" + directory + "”!", ioe1);
 		}
 	}
 
