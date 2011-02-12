@@ -312,7 +312,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		@Override
 		public DiskNode restore(byte[] buffer) {
 			long id = Storable.Utils.getLong(buffer, 0);
-			DiskNode node = new DiskNode(id, store.graph);
+			DiskNode node = new DiskNode(id, store.getGraph());
 			try {
 				ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(buffer, 8, buffer.length - 8));
 				Map<String, Object> properties = (Map<String, Object>) objectInputStream.readObject();
