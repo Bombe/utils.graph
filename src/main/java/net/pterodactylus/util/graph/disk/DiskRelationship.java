@@ -50,6 +50,18 @@ public class DiskRelationship extends DefaultRelationship<DiskGraph, DiskNode, D
 		return ((DiskRelationship) object).id == id;
 	}
 
+	//
+	// OBJECT METHODS
+	//
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		return (int) ((id >> 32) ^ (id & 0xffffffff));
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
