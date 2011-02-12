@@ -149,20 +149,20 @@ public interface Storable {
 		 *
 		 * @param value
 		 *            The long to store
-		 * @param bytes
+		 * @param buffer
 		 *            The byte array
 		 * @param position
 		 *            The position of the data
 		 */
-		public static void putLong(long value, byte[] bytes, int position) {
-			bytes[position + 0] = (byte) (value & 0xff);
-			bytes[position + 1] = (byte) ((value >>> 8) & 0xff);
-			bytes[position + 2] = (byte) ((value >>> 16) & 0xff);
-			bytes[position + 3] = (byte) ((value >>> 24) & 0xff);
-			bytes[position + 4] = (byte) ((value >>> 32) & 0xff);
-			bytes[position + 5] = (byte) ((value >>> 40) & 0xff);
-			bytes[position + 6] = (byte) ((value >>> 48) & 0xff);
-			bytes[position + 7] = (byte) ((value >>> 56) & 0xff);
+		public static void putLong(long value, byte[] buffer, int position) {
+			buffer[position + 0] = (byte) (value & 0xff);
+			buffer[position + 1] = (byte) ((value >>> 8) & 0xff);
+			buffer[position + 2] = (byte) ((value >>> 16) & 0xff);
+			buffer[position + 3] = (byte) ((value >>> 24) & 0xff);
+			buffer[position + 4] = (byte) ((value >>> 32) & 0xff);
+			buffer[position + 5] = (byte) ((value >>> 40) & 0xff);
+			buffer[position + 6] = (byte) ((value >>> 48) & 0xff);
+			buffer[position + 7] = (byte) ((value >>> 56) & 0xff);
 		}
 
 	}
