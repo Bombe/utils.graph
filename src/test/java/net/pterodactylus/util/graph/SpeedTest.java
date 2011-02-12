@@ -17,9 +17,12 @@
 
 package net.pterodactylus.util.graph;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import net.pterodactylus.util.graph.disk.DiskStore;
 
 /**
  * TODO
@@ -28,13 +31,14 @@ import java.util.Set;
  */
 public class SpeedTest {
 
-	private static final int NODE_COUNT = 100000;
-	private static final int RELATIONSHIP_COUNT = 200;
-	private static final int EDGE_COUNT = 2000000;
-	private static final int LINK_COUNT = 1000000;
+	private static final int NODE_COUNT = 200;
+	private static final int RELATIONSHIP_COUNT = 50;
+	private static final int EDGE_COUNT = NODE_COUNT * 10;
+	private static final int LINK_COUNT = 10000;
 
-	public static void main(String... arguments) {
-		Graph graph = new Graph();
+	public static void main(String... arguments) throws StoreException, FileNotFoundException {
+		DiskStore diskStore = new DiskStore(".");
+		Graph graph = diskStore.getGraph();
 		List<Node> nodes = new ArrayList<Node>();
 		List<Relationship> relationships = new ArrayList<Relationship>();
 		long timestamp;
@@ -47,15 +51,15 @@ public class SpeedTest {
 			node.set("index", i);
 		}
 		double milliseconds = (System.nanoTime() - timestamp) / 1000000.0;
-		System.out.println("time: " + milliseconds + " ms, " + (milliseconds / LINK_COUNT) + " ms/node");
+		System.out.println("time: " + milliseconds + " ms, " + (milliseconds / NODE_COUNT) + " ms/node");
 
 		System.out.println("creating " + RELATIONSHIP_COUNT + " relationships...");
 		timestamp = System.nanoTime();
 		for (int i = 0; i < RELATIONSHIP_COUNT; ++i) {
-			relationships.add(new Relationship());
+			relationships.add(graph.getRelationship(String.valueOf(i)));
 		}
 		milliseconds = (System.nanoTime() - timestamp) / 1000000.0;
-		System.out.println("time: " + milliseconds + " ms, " + (milliseconds / LINK_COUNT) + " ms/relationship");
+		System.out.println("time: " + milliseconds + " ms, " + (milliseconds / RELATIONSHIP_COUNT) + " ms/relationship");
 
 		System.out.println("creating " + EDGE_COUNT + " edges...");
 		timestamp = System.nanoTime();
@@ -63,18 +67,18 @@ public class SpeedTest {
 			Node startNode = nodes.get((int) (Math.random() * nodes.size()));
 			Node endNode = nodes.get((int) (Math.random() * nodes.size()));
 			Relationship relationship = relationships.get((int) (Math.random() * relationships.size()));
-			graph.createEdge(startNode, endNode, relationship);
+			startNode.link(endNode, relationship);
 		}
 		milliseconds = (System.nanoTime() - timestamp) / 1000000.0;
-		System.out.println("time: " + milliseconds + " ms, " + (milliseconds / LINK_COUNT) + " ms/edge");
+		System.out.println("time: " + milliseconds + " ms, " + (milliseconds / EDGE_COUNT) + " ms/edge");
 
 		System.out.println("getting " + LINK_COUNT + " links...");
 		timestamp = System.nanoTime();
 		long edgeCount = 0;
 		for (int i = 0; i < LINK_COUNT; ++i) {
-			Node targetNode = nodes.get((int) (Math.random() * nodes.size()));
-			Relationship relationship = relationships.get((int) (Math.random() * relationships.size()));
-			Set<Edge> edges = graph.getEdgesFrom(targetNode, relationship);
+			Node targetNode = nodes.get(/* (int) (Math.random() */(i % nodes.size()));
+			Relationship relationship = relationships.get(/* (int) (Math.random() */i % relationships.size());
+			Set<Edge> edges = targetNode.getOutgoingLinks(relationship);
 			edgeCount += edges.size();
 		}
 		milliseconds = (System.nanoTime() - timestamp) / 1000000.0;
