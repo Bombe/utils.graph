@@ -18,24 +18,47 @@
 package net.pterodactylus.util.graph;
 
 /**
- * TODO
+ * Base exception for all {@link Graph}-related errors.
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public class GraphException extends Exception {
 
+	/**
+	 * Creates a new graph exception.
+	 */
 	public GraphException() {
 		super();
 	}
 
+	/**
+	 * Creates a new graph exception.
+	 *
+	 * @param message
+	 *            The message of the exception
+	 */
 	public GraphException(String message) {
 		super(message);
 	}
 
+	/**
+	 * Creates a new graph exception.
+	 *
+	 * @param cause
+	 *            The cause of the exception
+	 */
 	public GraphException(Throwable cause) {
 		super(cause);
 	}
 
+	/**
+	 * Creates a new graph exception.
+	 *
+	 * @param message
+	 *            The message of the exception
+	 * @param cause
+	 *            The cause of the exception
+	 */
 	public GraphException(String message, Throwable cause) {
 		super(message, cause);
 	}

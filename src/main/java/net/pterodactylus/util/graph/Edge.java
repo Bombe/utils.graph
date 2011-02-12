@@ -18,18 +18,47 @@
 package net.pterodactylus.util.graph;
 
 /**
- * TODO
+ * An edge is a directed connection between two {@link Node}s (one start node
+ * and one end node) that have a certain {@link Relationship}.
  *
+ * @param <G>
+ *            The type of the graph
+ * @param <N>
+ *            The type of the node
+ * @param <E>
+ *            The type of the edge
+ * @param <R>
+ *            The type of the relationship
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public interface Edge<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
 
+	/**
+	 * Returns the graph this edge belongs to.
+	 *
+	 * @return The graph of the edge
+	 */
 	public G getGraph();
 
+	/**
+	 * Returns the start node of this edge.
+	 *
+	 * @return The start node of this edge
+	 */
 	public N getStartNode();
 
+	/**
+	 * Returns the end node of this edge.
+	 *
+	 * @return The end node of this edge
+	 */
 	public N getEndNode();
 
+	/**
+	 * Returns the relationship between the two nodes.
+	 *
+	 * @return The relationship between the two nodes
+	 */
 	public R getRelationship();
 
 }

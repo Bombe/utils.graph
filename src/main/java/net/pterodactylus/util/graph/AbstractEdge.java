@@ -20,17 +20,46 @@ package net.pterodactylus.util.graph;
 import net.pterodactylus.util.validation.Validation;
 
 /**
- * TODO
+ * Abstract base implementation of an {@link Edge}. This implementation stores
+ * the {@link Graph}, the two {@link Node}s, and the {@link Relationship} of the
+ * edge.
  *
+ * @param <G>
+ *            The type of the graph
+ * @param <N>
+ *            The type of the node
+ * @param <E>
+ *            The type of the edge
+ * @param <R>
+ *            The type of the relationship
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public abstract class AbstractEdge<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> implements Edge<G, N, E, R> {
 
+	/** The graph this edge belongs to. */
 	private final G graph;
+
+	/** The start node of this edge. */
 	private final N startNode;
+
+	/** The end node of this edge. */
 	private final N endNode;
+
+	/** The relationship between the two nodes. */
 	private final R relationship;
 
+	/**
+	 * Creates a new abstract edge.
+	 *
+	 * @param graph
+	 *            The graph the edge belongs to
+	 * @param startNode
+	 *            The start node of the edge
+	 * @param endNode
+	 *            The end node of the edge
+	 * @param relationship
+	 *            The relationship between the two nodes
+	 */
 	protected AbstractEdge(G graph, N startNode, N endNode, R relationship) {
 		Validation.begin().isNotNull("Graph", graph).isNotNull("Start Node", startNode).isNotNull("End Node", endNode).isNotNull("Relationship", relationship).check().isEqual("Start Node’s Graph", startNode.getGraph(), graph).isEqual("End Node’s Graph", endNode.getGraph(), graph).check();
 		this.graph = graph;

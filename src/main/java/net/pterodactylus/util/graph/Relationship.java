@@ -17,13 +17,27 @@
 
 package net.pterodactylus.util.graph;
 
-
 /**
- * TODO
+ * A relationship is the type of connection that an {@link Edge} creates between
+ * two {@link Node}s.
+ *
+ * @param <G>
+ *            The type of the graph
+ * @param <N>
+ *            The type of the node
+ * @param <E>
+ *            The type of the edge
+ * @param <R>
+ *            The type of the relationship
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public interface Relationship<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
 
+	/**
+	 * Returns the name of this relationship.
+	 *
+	 * @return The name of this relationship
+	 */
 	public String getName();
 
 }

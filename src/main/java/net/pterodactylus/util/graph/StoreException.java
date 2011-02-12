@@ -18,42 +18,46 @@
 package net.pterodactylus.util.graph;
 
 /**
- * TODO
+ * Exception that signals an error related to a {@link Graph}’s {@link Store}.
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public class StoreException extends Exception {
 
 	/**
-	 * TODO
+	 * Creates a new store exception.
 	 */
 	public StoreException() {
-		/* TODO */
+		super();
 	}
 
 	/**
-	 * TODO
+	 * Creates a new store exception.
 	 *
 	 * @param message
+	 *            The message of the exception
 	 */
 	public StoreException(String message) {
 		super(message);
 	}
 
 	/**
-	 * TODO
+	 * Creates a new store exception.
 	 *
 	 * @param cause
+	 *            The cause of the exception
 	 */
 	public StoreException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * TODO
+	 * Creates a new store exception.
 	 *
 	 * @param message
+	 *            The message of the exception
 	 * @param cause
+	 *            The cause of the exception
 	 */
 	public StoreException(String message, Throwable cause) {
 		super(message, cause);

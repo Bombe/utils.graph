@@ -17,13 +17,27 @@
 
 package net.pterodactylus.util.graph;
 
-
 /**
- * TODO
+ * A store is responsible for storing a single {@link Graph}.
+ *
+ * @param <G>
+ *            The type of the graph
+ * @param <N>
+ *            The type of the node
+ * @param <E>
+ *            The type of the edge
+ * @param <R>
+ *            The type of the relationship
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public interface Store<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> {
 
+	/**
+	 * Returns the graph that is stored in this store. Multiple calls to this
+	 * method will return the same graph object.
+	 *
+	 * @return The graph stored in this store
+	 */
 	public G getGraph();
 
 }

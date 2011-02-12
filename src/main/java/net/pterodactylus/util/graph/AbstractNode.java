@@ -21,15 +21,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO
+ * Abstract base implementation of a {@link Node}. This implementation stores
+ * the {@link Graph} of a node and its properties.
  *
+ * @param <G>
+ *            The type of the graph
+ * @param <N>
+ *            The type of the node
+ * @param <E>
+ *            The type of the edge
+ * @param <R>
+ *            The type of the relationship
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public abstract class AbstractNode<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E extends Edge<G, N, E, R>, R extends Relationship<G, N, E, R>> implements Node<G, N, E, R> {
 
+	/** The graph this node belongs to. */
 	private transient final G graph;
+
+	/** The properties of this node. */
 	private final Map<String, Object> properties = new HashMap<String, Object>();
 
+	/**
+	 * Creates a new abstract node.
+	 *
+	 * @param graph
+	 *            The graph the node belongs to
+	 */
 	protected AbstractNode(G graph) {
 		this.graph = graph;
 	}
@@ -42,6 +60,9 @@ public abstract class AbstractNode<G extends Graph<G, N, E, R>, N extends Node<G
 		return graph;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public N set(String key, Object value) {
@@ -57,6 +78,11 @@ public abstract class AbstractNode<G extends Graph<G, N, E, R>, N extends Node<G
 		return properties.get(key);
 	}
 
+	/**
+	 * Returns the properties of this node.
+	 *
+	 * @return The properties of this node
+	 */
 	protected Map<String, Object> getProperties() {
 		return properties;
 	}
