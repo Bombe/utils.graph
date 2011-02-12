@@ -51,21 +51,21 @@ public class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRe
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Node set(String key, Object value) {
+	public DiskNode set(String key, Object value) {
 		super.set(key, value);
 		getGraph().storeNode(this);
 		return this;
 	}
 
 	@Override
-	public Node link(DiskNode otherNode, DiskRelationship relationship) {
+	public DiskNode link(DiskNode otherNode, DiskRelationship relationship) {
 		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
 		getGraph().createEdge(this, otherNode, relationship);
 		return this;
 	}
 
 	@Override
-	public Node unlink(DiskNode otherNode, DiskRelationship relationship) {
+	public DiskNode unlink(DiskNode otherNode, DiskRelationship relationship) {
 		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
 		getGraph().removeEdge(this, otherNode, relationship);
 		return this;

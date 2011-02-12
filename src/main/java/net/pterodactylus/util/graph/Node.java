@@ -28,13 +28,13 @@ public interface Node<G extends Graph<G, N, E, R>, N extends Node<G, N, E, R>, E
 
 	public G getGraph();
 
-	public Node set(String key, Object value);
+	public N set(String key, Object value);
 
 	public Object get(String key);
 
-	public Node link(N otherNode, R relationship);
+	public N link(N otherNode, R relationship);
 
-	public Node unlink(N otherNode, R relationship);
+	public N unlink(N otherNode, R relationship);
 
 	public Set<E> getIncomingLinks(R relationship);
 

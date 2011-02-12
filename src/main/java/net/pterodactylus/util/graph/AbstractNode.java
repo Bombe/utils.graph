@@ -43,9 +43,10 @@ public abstract class AbstractNode<G extends Graph<G, N, E, R>, N extends Node<G
 	}
 
 	@Override
-	public Node set(String key, Object value) {
+	@SuppressWarnings("unchecked")
+	public N set(String key, Object value) {
 		properties.put(key, value);
-		return this;
+		return (N) this;
 	}
 
 	/**
