@@ -144,10 +144,8 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 				}
 				DiskNode loadedStartNode = (startNode != null) ? startNode : nodeStorage.load(nodeEdges.getStartNodeId(index));
 				DiskNode loadedEndNode = (endNode != null) ? endNode : nodeStorage.load(nodeEdges.getEndNodeId(index));
-//				System.out.println("adding edge (" + startNode.getId() + "/" + endNode.getId() + "/" + relationship.getName() + ")");
 				edges.add(new DiskEdge(nodeEdges.getEdgeId(index), graph, loadedStartNode, loadedEndNode, relationship));
 			}
-//			System.out.println("recreated " + edges.size() + " edges for node " + node.getId());
 			return edges;
 		} catch (IOException ioe1) {
 			/* TODO */
@@ -390,8 +388,6 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			byte[] buffer = new byte[12 + size() * 8 * 4];
 			Storable.Utils.putLong(nodeId, buffer, 0);
 			Storable.Utils.putInt(size(), buffer, 8);
-// System.out.println("Storing " + size() + " NodeEdges in " + buffer.capacity()
-// + " bytes.");
 			for (int index = 0; index < size(); ++index) {
 				Storable.Utils.putLong(edges.get(index), buffer, 12 + index * 32);
 				Storable.Utils.putLong(startNodes.get(index), buffer, 20 + index * 32);
@@ -413,8 +409,6 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			long nodeId = Storable.Utils.getLong(buffer, 0);
 			NodeEdgeList nodeEdgeList = new NodeEdgeList(nodeId);
 			int size = Storable.Utils.getInt(buffer, 8);
-// System.out.println("Reading " + size + " NodeEdges, remaining bytes: " +
-// buffer.remaining());
 			for (int index = 0; index < size; ++index) {
 				long edgeId = Storable.Utils.getLong(buffer, 12 + index * 32);
 				long startNodeId = Storable.Utils.getLong(buffer, 20 + index * 32);
