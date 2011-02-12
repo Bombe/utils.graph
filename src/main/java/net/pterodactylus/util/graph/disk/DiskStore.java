@@ -135,19 +135,24 @@ public class DiskStore implements Store {
 		return null;
 	}
 
-	Set<DiskEdge> getEdges(DiskNode node, DiskRelationship relationship) {
+	Set<DiskEdge> getEdges(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
 		try {
-			NodeEdgeList nodeEdges = nodeEdgeListStorage.load(node.getId());
+			NodeEdgeList nodeEdges = nodeEdgeListStorage.load((startNode != null) ? startNode.getId() : endNode.getId());
 			Set<DiskEdge> edges = new HashSet<DiskEdge>();
 			for (int index = 0, size = nodeEdges.size(); index < size; ++index) {
-				DiskRelationship loadedRelationship = relationshipStorage.load(nodeEdges.getRelationshipId(index));
-				if (!loadedRelationship.equals(relationship)) {
+				if ((relationship != null) && (nodeEdges.getRelationshipId(index) != relationship.getId())) {
 					continue;
 				}
-				DiskNode startNode = nodeStorage.load(nodeEdges.getStartNodeId(index));
-				DiskNode endNode = nodeStorage.load(nodeEdges.getEndNodeId(index));
+				if ((startNode != null) && (nodeEdges.getStartNodeId(index) != startNode.getId())) {
+					continue;
+				}
+				if ((endNode != null) && (nodeEdges.getEndNodeId(index) != endNode.getId())) {
+					continue;
+				}
+				DiskNode loadedStartNode = (startNode != null) ? startNode : nodeStorage.load(nodeEdges.getStartNodeId(index));
+				DiskNode loadedEndNode = (endNode != null) ? endNode : nodeStorage.load(nodeEdges.getEndNodeId(index));
 //				System.out.println("adding edge (" + startNode.getId() + "/" + endNode.getId() + "/" + relationship.getName() + ")");
-				edges.add(new DiskEdge(nodeEdges.getEdgeId(index), graph, startNode, endNode, relationship));
+				edges.add(new DiskEdge(nodeEdges.getEdgeId(index), graph, loadedStartNode, loadedEndNode, relationship));
 			}
 //			System.out.println("recreated " + edges.size() + " edges for node " + node.getId());
 			return edges;

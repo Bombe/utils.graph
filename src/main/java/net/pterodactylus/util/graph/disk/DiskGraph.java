@@ -17,8 +17,6 @@
 
 package net.pterodactylus.util.graph.disk;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Set;
 
 import net.pterodactylus.util.graph.Edge;
@@ -53,31 +51,11 @@ public class DiskGraph implements Graph<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	//
 
 	public Set<DiskEdge> getEdgesFrom(DiskNode node, DiskRelationship relationship) {
-		Set<DiskEdge> nodeEdges = store.getEdges(node, relationship);
-		if (nodeEdges == null) {
-			return Collections.emptySet();
-		}
-		for (Iterator<DiskEdge> edgeIterator = nodeEdges.iterator(); edgeIterator.hasNext();) {
-			DiskEdge edge = edgeIterator.next();
-			if (!edge.getRelationship().equals(relationship) || !edge.getStartNode().equals(node)) {
-				edgeIterator.remove();
-			}
-		}
-		return nodeEdges;
+		return store.getEdges(node, null, relationship);
 	}
 
 	public Set<DiskEdge> getEdgesTo(DiskNode node, DiskRelationship relationship) {
-		Set<DiskEdge> nodeEdges = store.getEdges(node, relationship);
-		if (nodeEdges == null) {
-			return Collections.emptySet();
-		}
-		for (Iterator<DiskEdge> edgeIterator = nodeEdges.iterator(); edgeIterator.hasNext();) {
-			DiskEdge edge = edgeIterator.next();
-			if (!edge.getRelationship().equals(relationship) || !edge.getEndNode().equals(node)) {
-				edgeIterator.remove();
-			}
-		}
-		return nodeEdges;
+		return store.getEdges(null, node, relationship);
 	}
 
 	//
