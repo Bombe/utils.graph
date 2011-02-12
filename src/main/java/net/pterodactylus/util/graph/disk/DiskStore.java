@@ -108,9 +108,9 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			throw new GraphException("“" + directory + "” is not a writable directory.");
 		}
 		try {
-			relationshipStorage = new Storage<DiskRelationship>(DISK_RELATIONSHIP_FACTORY, directory, "relationships");
-			nodeStorage = new Storage<DiskNode>(DISK_NODE_FACTORY, directory, "nodes");
-			nodeEdgeListStorage = new Storage<NodeEdgeList>(NODE_EDGE_LIST_FACTORY, directory, "edges");
+			relationshipStorage = new Storage<DiskRelationship>(128, DISK_RELATIONSHIP_FACTORY, directory, "relationships");
+			nodeStorage = new Storage<DiskNode>(512, DISK_NODE_FACTORY, directory, "nodes");
+			nodeEdgeListStorage = new Storage<NodeEdgeList>(64, NODE_EDGE_LIST_FACTORY, directory, "edges");
 			loadDiskStore();
 		} catch (IOException ioe1) {
 			throw new GraphException("Could not create store in or load store from “" + directory + "”!", ioe1);
