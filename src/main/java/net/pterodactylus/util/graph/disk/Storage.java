@@ -127,7 +127,7 @@ public class Storage<T extends Storable> implements Closeable {
 		idDirectoryIndexes.put(storable.getId(), directoryIndex);
 
 		/* now write directory to disk. */
-		indexFile.seek(directoryIndex*16);
+		indexFile.seek(directoryIndex * 16);
 		indexFile.write(allocation.getBuffer());
 
 		/* if an old index was deleted, wipe it. */
@@ -148,7 +148,7 @@ public class Storage<T extends Storable> implements Closeable {
 		}
 		Allocation allocation = directoryEntries.get(directoryIndex);
 		byte[] buffer = new byte[allocation.getSize()];
-		dataFile.seek(allocation.getPosition()*BLOCK_SIZE);
+		dataFile.seek(allocation.getPosition() * BLOCK_SIZE);
 		dataFile.readFully(buffer);
 		return factory.restore(buffer);
 	}
