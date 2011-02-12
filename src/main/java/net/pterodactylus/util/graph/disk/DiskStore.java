@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import net.pterodactylus.util.graph.Graph;
@@ -472,9 +471,7 @@ public class DiskStore implements Store {
 				ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(buffer, 8, buffer.length - 8));
 				@SuppressWarnings("unchecked")
 				Map<String, Object> properties = (Map<String, Object>) objectInputStream.readObject();
-				for (Entry<String, Object> property : properties.entrySet()) {
-					node.set(property.getKey(), property.getValue());
-				}
+				node.setProperties(properties);
 			} catch (IOException ioe1) {
 				// TODO Auto-generated catch block
 			} catch (ClassNotFoundException e) {
