@@ -20,6 +20,7 @@ package net.pterodactylus.util.graph.disk;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.Map;
 import java.util.Set;
 
 import net.pterodactylus.util.graph.AbstractNode;
@@ -109,6 +110,18 @@ class DiskNode extends AbstractNode implements Storable {
 	public Set<DiskEdge> getOutgoingLinks(Relationship relationship) {
 		Validation.begin().isNotNull("Relationship", relationship).check().isInstanceOf("Relationship", relationship, DiskRelationship.class).check();
 		return ((DiskGraph) getGraph()).getEdgesFrom(this, (DiskRelationship) relationship);
+	}
+
+	//
+	// ABSTRACTNODE METHODS
+	//
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void setProperties(Map<String, Object> properties) {
+		super.setProperties(properties);
 	}
 
 	//
