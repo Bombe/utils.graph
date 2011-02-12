@@ -17,7 +17,7 @@
 
 package net.pterodactylus.util.graph;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +36,7 @@ public class SpeedTest {
 	private static final int EDGE_COUNT = NODE_COUNT * 10;
 	private static final int LINK_COUNT = 10000;
 
-	public static void main(String... arguments) throws StoreException, FileNotFoundException {
+	public static void main(String... arguments) throws StoreException, IOException {
 		DiskStore diskStore = new DiskStore(".");
 		Graph graph = diskStore.getGraph();
 		List<Node> nodes = new ArrayList<Node>();
