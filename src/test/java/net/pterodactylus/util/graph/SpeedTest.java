@@ -17,6 +17,8 @@
 
 package net.pterodactylus.util.graph;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +34,27 @@ import net.pterodactylus.util.storage.StorageException;
  */
 public class SpeedTest {
 
-	private static final int NODE_COUNT = 200;
-	private static final int RELATIONSHIP_COUNT = 50;
+	private static final int NODE_COUNT = 2000;
+	private static final int RELATIONSHIP_COUNT = 500;
 	private static final int EDGE_COUNT = NODE_COUNT * 10;
-	private static final int LINK_COUNT = 10000;
+	private static final int LINK_COUNT = 1000000;
 
 	public static void main(String... arguments) throws StorageException, IOException, GraphException {
+		while (true) {
+			test();
+		}
+	}
+
+	public static void test() throws GraphException {
+		for (File file : new File(".").listFiles(new FilenameFilter() {
+
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".dat") || name.endsWith(".idx");
+			}
+		})) {
+			file.delete();
+		}
 		DiskStore diskStore = new DiskStore(".");
 		Graph graph = diskStore.getGraph();
 		List<Node> nodes = new ArrayList<Node>();
