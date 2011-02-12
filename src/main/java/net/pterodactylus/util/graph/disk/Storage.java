@@ -94,18 +94,14 @@ public class Storage<T extends Storable> implements Closeable {
 	public void add(T storable) throws StoreException, IOException {
 		byte[] storableBytes = storable.getBuffer();
 		int storableLength = storableBytes.length;
-//		System.out.println("Storing " + storableLength + " bytes…");
 		int blocks = getBlocks(storableLength);
-//		System.out.println("Storing " + blocks + " Blocks.");
 		int position = findFreeRegion(blocks);
-//		System.out.println("Free Region: " + position);
 
 		/* first, write data. */
 		allocations.set(position, position + blocks);
 		if (dataFile.length() < (position * BLOCK_SIZE + storableLength)) {
 			dataFile.setLength(position * BLOCK_SIZE + storableLength);
 		}
-//		System.out.println("Storing " + name + ":" + storable.getId() + " @ "+ position + " for " + storableLength + " bytes.");
 		dataFile.seek(position * BLOCK_SIZE);
 		dataFile.write(storableBytes);
 
@@ -113,11 +109,9 @@ public class Storage<T extends Storable> implements Closeable {
 		int oldIndex = -1;
 		Allocation allocation = new Allocation(storable.getId(), position, storableLength);
 		int directoryIndex = emptyDirectoryEntries.nextSetBit(0);
-//		System.out.println("Next Free Directory Entry: " + directoryIndex);
 		if (directoryIndex == -1) {
 			/* append. */
 			directoryIndex = directoryEntries.size();
-//			System.out.println("Appending to Directory, Entry " + directoryIndex);
 			directoryEntries.add(allocation);
 		} else {
 			directoryEntries.set(directoryIndex, allocation);
@@ -125,7 +119,6 @@ public class Storage<T extends Storable> implements Closeable {
 		}
 		if (idDirectoryIndexes.containsKey(storable.getId())) {
 			oldIndex = idDirectoryIndexes.get(storable.getId());
-//			System.out.println("Removing Old Entry at " + oldIndex + ".");
 			Allocation oldAllocation = directoryEntries.set(oldIndex, null);
 			emptyDirectoryEntries.set(oldIndex);
 			allocations.clear(oldAllocation.getPosition(), oldAllocation.getPosition() + getBlocks(oldAllocation.getSize()));
@@ -149,10 +142,8 @@ public class Storage<T extends Storable> implements Closeable {
 	}
 
 	public T load(long id) throws IOException {
-//		System.out.println("Loading " + name + " @ " + id  + "…");
 		Integer directoryIndex = idDirectoryIndexes.get(id);
 		if (directoryIndex == null) {
-//			System.out.println("Not found.");
 			return null;
 		}
 		Allocation allocation = directoryEntries.get(directoryIndex);
