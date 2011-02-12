@@ -81,4 +81,16 @@ public abstract class AbstractNode implements Node {
 		return properties;
 	}
 
+	/**
+	 * Sets the properties of this node. This will clear the node’s properties
+	 * and then copy all key-value pairs from the given properties into the node
+	 *
+	 * @param properties
+	 *            The properties to copy into the node
+	 */
+	protected void setProperties(Map<String, Object> properties) {
+		this.properties.clear();
+		this.properties.putAll(properties);
+	}
+
 }
