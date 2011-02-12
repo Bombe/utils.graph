@@ -34,33 +34,71 @@ import net.pterodactylus.util.graph.StoreException;
 import net.pterodactylus.util.graph.disk.Storable.Factory;
 
 /**
- * TODO
+ * {@link Store} implementation that stores the complete graph on disk.
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelationship> {
 
+	/** {@link Factory} that can create {@link DiskRelationship}s. */
 	@SuppressWarnings("synthetic-access")
 	public final Factory<DiskRelationship> DISK_RELATIONSHIP_FACTORY = new DiskRelationshipFactory();
+
+	/** {@link Factory} that can create {@link DiskNode}s. */
 	public final Factory<DiskNode> DISK_NODE_FACTORY = new DiskNodeFactory(this);
+
+	/** {@link Factory} that can create {@link NodeEdgeList}s. */
 	@SuppressWarnings("synthetic-access")
 	private static final Factory<NodeEdgeList> NODE_EDGE_LIST_FACTORY = new NodeEdgeListFactory();
 
+	/** ID Counter for new nodes. */
 	private static long nodeCounter = 0;
+
+	/** ID counter for new edges. */
 	private static long edgeCounter = 0;
+
+	/** ID counter for new relationships. */
 	private static long relationshipCounter = 0;
 
+	/** The graph of this store. */
 	private DiskGraph graph;
+
+	/** Cache for relationships. */
 	private final Map<String, DiskRelationship> relationships = new HashMap<String, DiskRelationship>();
 
+	/** The storage for the node-edge lists. */
 	private final Storage<NodeEdgeList> nodeEdgeListStorage;
+
+	/** The storage for the nodes. */
 	private final Storage<DiskNode> nodeStorage;
+
+	/** The storage for the relationships. */
 	private final Storage<DiskRelationship> relationshipStorage;
 
+	/**
+	 * Creates a new disk store in or loads a disk store from the given
+	 * directory.
+	 *
+	 * @param directory
+	 *            The directory to create the store in or to load the store from
+	 * @throws StoreException
+	 *             if the store can not be created in or loaded from the given
+	 *             directory
+	 */
 	public DiskStore(String directory) throws StoreException {
 		this(new File(directory));
 	}
 
+	/**
+	 * Creates a new disk store in or loads a disk store from the given
+	 * directory.
+	 *
+	 * @param directory
+	 *            The directory to create the store in or to load the store from
+	 * @throws StoreException
+	 *             if the store can not be created in or loaded from the given
+	 *             directory
+	 */
 	public DiskStore(File directory) throws StoreException {
 		if (!directory.exists() || !directory.isDirectory() || !directory.canWrite()) {
 			throw new StoreException("“" + directory + "” is not a writable directory.");
@@ -79,16 +117,36 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	// ACTIONS
 	//
 
+	/**
+	 * Creates a new node.
+	 *
+	 * @return The new node
+	 */
 	DiskNode createNode() {
 		DiskNode node = new DiskNode(nodeCounter++, graph);
 		storeNode(node);
 		return node;
 	}
 
+	/**
+	 * Loads the node with the given ID.
+	 *
+	 * @param nodeId
+	 *            The ID of the node
+	 * @return The node, or {@code null} if there is no node with the given ID
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
 	DiskNode getNode(long nodeId) throws IOException {
 		return nodeStorage.load(nodeId);
 	}
 
+	/**
+	 * Removes the given node and all edges to or from it from the storage.
+	 *
+	 * @param node
+	 *            The node to remove
+	 */
 	void removeNode(DiskNode node) {
 		NodeEdgeList nodeEdges;
 		try {
@@ -100,6 +158,13 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		}
 	}
 
+	/**
+	 * Stores the node in the storage. This method should be called after a node
+	 * was created or its properties were changed.
+	 *
+	 * @param node
+	 *            The node to store
+	 */
 	void storeNode(DiskNode node) {
 		try {
 			nodeStorage.add(node);
@@ -110,6 +175,17 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		}
 	}
 
+	/**
+	 * Creates a new edge.
+	 *
+	 * @param startNode
+	 *            The start node of the edge
+	 * @param endNode
+	 *            The end node of the edge
+	 * @param relationship
+	 *            The relationship between the two nodes
+	 * @return The new edge
+	 */
 	DiskEdge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
 		DiskEdge edge = new DiskEdge(edgeCounter++, graph, startNode, endNode, relationship);
 		try {
@@ -128,6 +204,20 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		return null;
 	}
 
+	/**
+	 * Returns all edges that match the given requirements. Only one of
+	 * {@code startNode} and {@code endNode} may be {@code null}.
+	 *
+	 * @param startNode
+	 *            The start node of the edge (or {@code null} to match all start
+	 *            nodes)
+	 * @param endNode
+	 *            The end node of the edge (or {@code null} to match all end
+	 *            nodes)
+	 * @param relationship
+	 *            The relationship of the edge
+	 * @return The matching edges
+	 */
 	Set<DiskEdge> getEdges(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
 		try {
 			NodeEdgeList nodeEdges = nodeEdgeListStorage.load((startNode != null) ? startNode.getId() : endNode.getId());
@@ -153,6 +243,17 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		}
 	}
 
+	/**
+	 * Returns the node-edge list for the node with the given ID.
+	 *
+	 * @param nodeId
+	 *            The ID of the node
+	 * @return The node-edge list for the given node
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws StoreException
+	 *             if a store error occurs
+	 */
 	NodeEdgeList getNodeEdgeList(long nodeId) throws IOException, StoreException {
 		NodeEdgeList nodeEdges = nodeEdgeListStorage.load(nodeId);
 		if (nodeEdges == null) {
@@ -162,6 +263,16 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		return nodeEdges;
 	}
 
+	/**
+	 * Removes the edge with the given relationship between the given nodes.
+	 *
+	 * @param startNode
+	 *            The start node of the edge
+	 * @param endNode
+	 *            The end node of the edge
+	 * @param relationship
+	 *            The relationship of the edge
+	 */
 	void removeEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
 		try {
 			DiskEdge edge = getEdge(startNode, endNode, relationship);
@@ -178,6 +289,17 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		}
 	}
 
+	/**
+	 * Returns the edge with the given relationship between the given nodes.
+	 *
+	 * @param startNode
+	 *            The start node of the edge
+	 * @param endNode
+	 *            The end node of the edge
+	 * @param relationship
+	 *            The relationship between the nodes
+	 * @return The edge, or {@code null} if there is no such edge
+	 */
 	DiskEdge getEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
 		NodeEdgeList nodeEdges;
 		try {
@@ -193,6 +315,14 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		return null;
 	}
 
+	/**
+	 * Returns the relationship with the given name. If no relationship with the
+	 * given name exists, one is created.
+	 *
+	 * @param name
+	 *            The name of the relationship
+	 * @return The relationship with the given name
+	 */
 	DiskRelationship getRelationship(String name) {
 		DiskRelationship relationship = relationships.get(name);
 		if (relationship == null) {
@@ -225,6 +355,14 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 	// PRIVATE METHODS
 	//
 
+	/**
+	 * Attempts to load a store from the disk.
+	 *
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws StoreException
+	 *             if a store error occurs
+	 */
 	private void loadDiskStore() throws IOException, StoreException {
 
 		relationshipStorage.open();
@@ -269,9 +407,14 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 		graph = new DiskGraph(this);
 		graph.setRootNode(rootNode);
 		return;
-
 	}
 
+	/**
+	 * {@link Factory} implementation that can create {@link DiskRelationship}
+	 * objects.
+	 *
+	 * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
+	 */
 	private static class DiskRelationshipFactory implements Factory<DiskRelationship> {
 
 		/**
@@ -290,10 +433,22 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 
 	}
 
+	/**
+	 * {@link Factory} implementation that can create {@link DiskNode}s.
+	 *
+	 * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
+	 */
 	private static class DiskNodeFactory implements Factory<DiskNode> {
 
+		/** The store. */
 		private final DiskStore store;
 
+		/**
+		 * Creates a new disk node factory.
+		 *
+		 * @param store
+		 *            The store the nodes belong to
+		 */
 		public DiskNodeFactory(DiskStore store) {
 			this.store = store;
 		}
@@ -322,18 +477,52 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 
 	}
 
+	/**
+	 * A node-edge list is a node-specific list that contains all edges from or
+	 * to the given node and references to the nodes on the respective other
+	 * ends of the edge.
+	 *
+	 * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
+	 */
 	private static class NodeEdgeList implements Storable {
 
+		/** The ID of the node. */
 		private final long nodeId;
+
+		/** The IDs of all connecting edges. */
 		private List<Long> edges = new ArrayList<Long>();
+
+		/** The start nodes of the edges. */
 		private List<Long> startNodes = new ArrayList<Long>();
+
+		/** The end nodes of the edges. */
 		private List<Long> endNodes = new ArrayList<Long>();
+
+		/** The relationships between the nodes. */
 		private List<Long> relationships = new ArrayList<Long>();
 
+		/**
+		 * Creates a new node-edge list for the node with the given ID.
+		 *
+		 * @param nodeId
+		 *            The ID of the node
+		 */
 		public NodeEdgeList(long nodeId) {
 			this.nodeId = nodeId;
 		}
 
+		/**
+		 * Adds an edge to this node-edge list.
+		 *
+		 * @param edgeId
+		 *            The ID of the edge to add
+		 * @param startNodeId
+		 *            The ID of the start node of the edge
+		 * @param endNodeId
+		 *            The ID of the end node of the edge
+		 * @param relationshipId
+		 *            The ID of the relationship between the nodes
+		 */
 		public void addEdge(long edgeId, long startNodeId, long endNodeId, long relationshipId) {
 			edges.add(edgeId);
 			startNodes.add(startNodeId);
@@ -341,6 +530,12 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			relationships.add(relationshipId);
 		}
 
+		/**
+		 * Removes the edge with the given ID.
+		 *
+		 * @param edgeId
+		 *            The ID of the edge to remove
+		 */
 		public void removeEdge(long edgeId) {
 			int index = edges.indexOf(edgeId);
 			if (index == -1) {
@@ -360,22 +555,55 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			return nodeId;
 		}
 
+		/**
+		 * Returns the number of edges in this list.
+		 *
+		 * @return The number of edges
+		 */
 		public int size() {
 			return edges.size();
 		}
 
+		/**
+		 * Returns the ID of the edge at the given index.
+		 *
+		 * @param index
+		 *            The index of the edge
+		 * @return The ID of the edge at the given index
+		 */
 		public long getEdgeId(int index) {
 			return edges.get(index);
 		}
 
+		/**
+		 * Returns the ID of the start node at the given index.
+		 *
+		 * @param index
+		 *            The index of the start node
+		 * @return The ID of the start node at the given index
+		 */
 		public long getStartNodeId(int index) {
 			return startNodes.get(index);
 		}
 
+		/**
+		 * Returns the ID of the end node at the given index.
+		 *
+		 * @param index
+		 *            The index of the end node
+		 * @return The ID of the end node at the given index
+		 */
 		public long getEndNodeId(int index) {
 			return endNodes.get(index);
 		}
 
+		/**
+		 * Returns the ID of the relationship at the given index.
+		 *
+		 * @param index
+		 *            The index of the relationship
+		 * @return The ID of the relationship at the given index
+		 */
 		public long getRelationshipId(int index) {
 			return relationships.get(index);
 		}
@@ -399,6 +627,11 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 
 	}
 
+	/**
+	 * {@link Factory} implementation that can create {@link NodeEdgeList}s.
+	 *
+	 * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
+	 */
 	private static class NodeEdgeListFactory implements Factory<NodeEdgeList> {
 
 		/**
