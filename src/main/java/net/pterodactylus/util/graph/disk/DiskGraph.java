@@ -28,7 +28,7 @@ import net.pterodactylus.util.validation.Validation;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public class DiskGraph implements Graph<DiskGraph, DiskNode, DiskEdge, DiskRelationship> {
+class DiskGraph implements Graph<DiskGraph, DiskNode, DiskEdge, DiskRelationship> {
 
 	private final DiskStore store;
 	private DiskNode rootNode;
