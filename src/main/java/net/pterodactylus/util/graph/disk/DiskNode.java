@@ -32,7 +32,7 @@ import net.pterodactylus.util.validation.Validation;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelationship> implements Storable {
+class DiskNode extends AbstractNode<DiskGraph, DiskNode, DiskEdge, DiskRelationship> implements Storable {
 
 	private final long id;
 
