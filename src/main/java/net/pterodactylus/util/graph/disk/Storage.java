@@ -38,7 +38,7 @@ import net.pterodactylus.util.io.Closer;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public class Storage<T> implements Closeable {
+public class Storage<T extends Storable> implements Closeable {
 
 	private static final int BLOCK_SIZE = 512;
 
@@ -98,7 +98,7 @@ public class Storage<T> implements Closeable {
 		}
 	}
 
-	public void add(Storable storable) throws StoreException, IOException {
+	public void add(T storable) throws StoreException, IOException {
 		byte[] storableBytes = storable.getBuffer();
 		int storableLength = storableBytes.length;
 //		System.out.println("Storing " + storableLength + " bytes…");
@@ -190,8 +190,8 @@ public class Storage<T> implements Closeable {
 		return directoryEntries.get(directoryIndex);
 	}
 
-	public void remove(Storable storable) {
-
+	public void remove(T storable) {
+		/* TODO */
 	}
 
 	public void close() {
