@@ -20,6 +20,8 @@ package net.pterodactylus.util.graph;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.pterodactylus.util.validation.Validation;
+
 /**
  * Abstract base implementation of a {@link Node}. This implementation stores
  * the {@link Graph} of a node and its properties.
@@ -41,6 +43,7 @@ public abstract class AbstractNode implements Node {
 	 *            The graph the node belongs to
 	 */
 	protected AbstractNode(Graph graph) {
+		Validation.begin().isNotNull("Graph", graph).check();
 		this.graph = graph;
 	}
 

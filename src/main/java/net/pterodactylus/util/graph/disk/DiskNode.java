@@ -52,7 +52,6 @@ class DiskNode extends AbstractNode implements Storable {
 	 */
 	DiskNode(long id, DiskGraph graph) {
 		super(graph);
-		Validation.begin().isNotNull("Graph", graph).check().isInstanceOf("Graph", graph, DiskGraph.class).check();
 		this.id = id;
 	}
 

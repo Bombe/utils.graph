@@ -37,6 +37,7 @@ import net.pterodactylus.util.storage.Factory;
 import net.pterodactylus.util.storage.Storable;
 import net.pterodactylus.util.storage.Storage;
 import net.pterodactylus.util.storage.StorageException;
+import net.pterodactylus.util.validation.Validation;
 
 /**
  * {@link Store} implementation that stores the complete graph on disk.
@@ -105,6 +106,7 @@ public class DiskStore implements Store {
 	 *             directory
 	 */
 	public DiskStore(File directory) throws GraphException {
+		Validation.begin().isNotNull("Directory", directory).check();
 		if (!directory.exists() || !directory.isDirectory() || !directory.canWrite()) {
 			throw new GraphException("“" + directory + "” is not a writable directory.");
 		}
