@@ -40,7 +40,7 @@ import net.pterodactylus.util.graph.disk.Storable.Factory;
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
-public class DiskStore implements Store {
+public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelationship> {
 
 	public final Factory<DiskRelationship> DISK_RELATIONSHIP_FACTORY = new DiskRelationshipFactory();
 	public final Factory<DiskNode> DISK_NODE_FACTORY = new DiskNodeFactory(this);
@@ -225,7 +225,7 @@ public class DiskStore implements Store {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Graph getGraph() {
+	public DiskGraph getGraph() {
 		return graph;
 	}
 
