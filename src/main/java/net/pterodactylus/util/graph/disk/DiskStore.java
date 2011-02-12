@@ -42,8 +42,10 @@ import net.pterodactylus.util.graph.disk.Storable.Factory;
  */
 public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelationship> {
 
+	@SuppressWarnings("synthetic-access")
 	public final Factory<DiskRelationship> DISK_RELATIONSHIP_FACTORY = new DiskRelationshipFactory();
 	public final Factory<DiskNode> DISK_NODE_FACTORY = new DiskNodeFactory(this);
+	@SuppressWarnings("synthetic-access")
 	private static final Factory<NodeEdgeList> NODE_EDGE_LIST_FACTORY = new NodeEdgeListFactory();
 
 	private static long nodeCounter = 0;
@@ -315,6 +317,7 @@ public class DiskStore implements Store<DiskGraph, DiskNode, DiskEdge, DiskRelat
 			DiskNode node = new DiskNode(id, store.getGraph());
 			try {
 				ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(buffer, 8, buffer.length - 8));
+				@SuppressWarnings("unchecked")
 				Map<String, Object> properties = (Map<String, Object>) objectInputStream.readObject();
 				for (Entry<String, Object> property : properties.entrySet()) {
 					node.set(property.getKey(), property.getValue());
