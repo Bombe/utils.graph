@@ -18,21 +18,44 @@
 package net.pterodactylus.util.graph.disk;
 
 import net.pterodactylus.util.graph.AbstractEdge;
+import net.pterodactylus.util.graph.Edge;
 
 /**
- * TODO
+ * {@link Edge} implementation that is used by {@link DiskStore}. In addition to
+ * extends {@link AbstractEdge} it adds an ID to the edge which is used for
+ * comparison with {@link Object#equals(Object)}.
  *
  * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
  */
 public class DiskEdge extends AbstractEdge<DiskGraph, DiskNode, DiskEdge, DiskRelationship> {
 
+	/** The ID of the edge. */
 	private final long id;
 
+	/**
+	 * Creates a new edge.
+	 *
+	 * @param id
+	 *            The ID of the edge
+	 * @param graph
+	 *            The graph the edge belongs to
+	 * @param startNode
+	 *            The start node of the edge
+	 * @param endNode
+	 *            The end node of the edge
+	 * @param relationship
+	 *            The relationship between the two nodes
+	 */
 	public DiskEdge(long id, DiskGraph graph, DiskNode startNode, DiskNode endNode, DiskRelationship relationship) {
 		super(graph, startNode, endNode, relationship);
 		this.id = id;
 	}
 
+	/**
+	 * Returns the ID of the edge.
+	 *
+	 * @return The ID of the edge
+	 */
 	public long getId() {
 		return id;
 	}
