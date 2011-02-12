@@ -19,31 +19,72 @@ package net.pterodactylus.util.graph.disk;
 
 import net.pterodactylus.util.graph.StoreException;
 
+/**
+ * An allocation is stored in the allocation table of a {@link Storage}. It
+ * keeps track of which {@link Storable} is stored in which position of the data
+ * file and how long it is.
+ *
+ * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
+ */
 class Allocation implements Storable {
 
+	/** Factory to create {@link Allocation}s from {@code byte[]}s. */
 	public static final Factory FACTORY = new Factory();
 
+	/** The ID of the {@link Storable}. */
 	private final long id;
+
+	/** The block position of the data. */
 	private final int position;
+
+	/** The size of the data (in bytes). */
 	private final int size;
 
+	/**
+	 * Creates a new allocation table entry.
+	 *
+	 * @param id
+	 *            The ID of the {@link Storable}
+	 * @param position
+	 *            The block position of the data
+	 * @param size
+	 *            The size of the data (in bytes)
+	 */
 	public Allocation(long id, int position, int size) {
 		this.id = id;
 		this.position = position;
 		this.size = size;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public long getId() {
 		return id;
 	}
 
+	/**
+	 * Returns the block position of the data.
+	 *
+	 * @return The block position of the data
+	 */
 	public int getPosition() {
 		return position;
 	}
 
+	/**
+	 * Returns the size of the data.
+	 *
+	 * @return The size of the data (in bytes)
+	 */
 	public int getSize() {
 		return size;
 	}
+
+	//
+	// INTERFACE Storable
+	//
 
 	/**
 	 * {@inheritDoc}
@@ -57,6 +98,10 @@ class Allocation implements Storable {
 		return buffer;
 	}
 
+	//
+	// OBJECT METHODS
+	//
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -65,6 +110,12 @@ class Allocation implements Storable {
 		return String.format("%s[id=%d,position=%d,size=%d]", getClass().getName(), id, position, size);
 	}
 
+	/**
+	 * {@link Storable.Factory} implementation that can create
+	 * {@link Allocation} objects.
+	 *
+	 * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’ Roden</a>
+	 */
 	public static class Factory implements Storable.Factory<Allocation> {
 
 		/**
