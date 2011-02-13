@@ -19,6 +19,7 @@ package net.pterodactylus.util.graph;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import net.pterodactylus.util.validation.Validation;
 
@@ -70,6 +71,38 @@ public abstract class AbstractNode implements Node {
 	@Override
 	public Object get(String key) {
 		return properties.get(key);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Node link(Node otherNode, String relationship) throws GraphException {
+		return link(otherNode, graph.getRelationship(relationship));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Node unlink(Node otherNode, String relationship) throws GraphException {
+		return unlink(otherNode, graph.getRelationship(relationship));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Set<? extends Edge> getIncomingLinks(String relationship) throws GraphException {
+		return getIncomingLinks(graph.getRelationship(relationship));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Set<? extends Edge> getOutgoingLinks(String relationship) throws GraphException {
+		return getOutgoingLinks(graph.getRelationship(relationship));
 	}
 
 	/**

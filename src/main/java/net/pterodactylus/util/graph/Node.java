@@ -71,6 +71,19 @@ public interface Node {
 	public Node link(Node otherNode, Relationship relationship) throws GraphException;
 
 	/**
+	 * Links this node to the given node with the given relationship.
+	 *
+	 * @param otherNode
+	 *            The node to link to
+	 * @param relationship
+	 *            The relationship of the link
+	 * @return This node
+	 * @throws GraphException
+	 *             if the edge can not be created
+	 */
+	public Node link(Node otherNode, String relationship) throws GraphException;
+
+	/**
 	 * Removes the link to the given node with the given relationship.
 	 *
 	 * @param otherNode
@@ -82,6 +95,19 @@ public interface Node {
 	 *             if the edge can not be removed
 	 */
 	public Node unlink(Node otherNode, Relationship relationship) throws GraphException;
+
+	/**
+	 * Removes the link to the given node with the given relationship.
+	 *
+	 * @param otherNode
+	 *            The node to sever the link from
+	 * @param relationship
+	 *            The relationship of the link
+	 * @return This node
+	 * @throws GraphException
+	 *             if the edge can not be removed
+	 */
+	public Node unlink(Node otherNode, String relationship) throws GraphException;
 
 	/**
 	 * Returns all edges that have this node as the end node.
@@ -96,6 +122,18 @@ public interface Node {
 	public Set<? extends Edge> getIncomingLinks(Relationship relationship) throws GraphException;
 
 	/**
+	 * Returns all edges that have this node as the end node.
+	 *
+	 * @see Edge#getEndNode()
+	 * @param relationship
+	 *            The relationship of the edges
+	 * @return The edges that have this node as the end node
+	 * @throws GraphException
+	 *             if the links can not be retrieved
+	 */
+	public Set<? extends Edge> getIncomingLinks(String relationship) throws GraphException;
+
+	/**
 	 * Returns all edges that have this node as the start node.
 	 *
 	 * @see Edge#getStartNode()
@@ -106,5 +144,17 @@ public interface Node {
 	 *             if the links can not be retrieved
 	 */
 	public Set<? extends Edge> getOutgoingLinks(Relationship relationship) throws GraphException;
+
+	/**
+	 * Returns all edges that have this node as the start node.
+	 *
+	 * @see Edge#getStartNode()
+	 * @param relationship
+	 *            The relationship of the edges
+	 * @return The edges that have this node as the start node
+	 * @throws GraphException
+	 *             if the links can not be retrieved
+	 */
+	public Set<? extends Edge> getOutgoingLinks(String relationship) throws GraphException;
 
 }
