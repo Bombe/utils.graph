@@ -152,8 +152,8 @@ class DiskGraph implements Graph {
 	}
 
 	/**
-	 * Creates a new edge between the given nodes that has the given
-	 * relationship.
+	 * Tries to find an edge between the given nodes that has the given
+	 * relationship. If no such edge exists a new one is created.
 	 *
 	 * @param startNode
 	 *            The start node of the edge
@@ -166,6 +166,10 @@ class DiskGraph implements Graph {
 	 *             if the edge can not be created
 	 */
 	DiskEdge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
+		DiskEdge edge = store.getEdge(startNode, endNode, relationship);
+		if (edge != null) {
+			return edge;
+		}
 		return store.createEdge(startNode, endNode, relationship);
 	}
 
