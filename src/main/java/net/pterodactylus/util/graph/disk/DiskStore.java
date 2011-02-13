@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.pterodactylus.util.graph.Edge;
 import net.pterodactylus.util.graph.Graph;
 import net.pterodactylus.util.graph.GraphException;
 import net.pterodactylus.util.graph.Store;
@@ -235,10 +236,10 @@ public class DiskStore implements Store {
 	 * @throws GraphException
 	 *             if the edges can not be loaded
 	 */
-	Set<DiskEdge> getEdges(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
+	Set<Edge> getEdges(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
 		try {
 			NodeEdgeList nodeEdges = nodeEdgeListStorage.load((startNode != null) ? startNode.getId() : endNode.getId());
-			Set<DiskEdge> edges = new HashSet<DiskEdge>();
+			Set<Edge> edges = new HashSet<Edge>();
 			for (int index = 0, size = nodeEdges.size(); index < size; ++index) {
 				if (nodeEdges.getRelationshipId(index) != relationship.getId()) {
 					continue;

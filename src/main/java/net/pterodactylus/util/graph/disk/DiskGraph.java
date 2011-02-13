@@ -19,6 +19,7 @@ package net.pterodactylus.util.graph.disk;
 
 import java.util.Set;
 
+import net.pterodactylus.util.graph.Edge;
 import net.pterodactylus.util.graph.Graph;
 import net.pterodactylus.util.graph.GraphException;
 import net.pterodactylus.util.graph.Node;
@@ -84,7 +85,7 @@ class DiskGraph implements Graph {
 	 * @throws GraphException
 	 *             if the edges can not be retrieved
 	 */
-	public Set<DiskEdge> getEdgesFrom(DiskNode node, DiskRelationship relationship) throws GraphException {
+	public Set<Edge> getEdgesFrom(DiskNode node, DiskRelationship relationship) throws GraphException {
 		return store.getEdges(node, null, relationship);
 	}
 
@@ -101,7 +102,7 @@ class DiskGraph implements Graph {
 	 * @throws GraphException
 	 *             if the edges can not be retrieved
 	 */
-	public Set<DiskEdge> getEdgesTo(DiskNode node, DiskRelationship relationship) throws GraphException {
+	public Set<Edge> getEdgesTo(DiskNode node, DiskRelationship relationship) throws GraphException {
 		return store.getEdges(null, node, relationship);
 	}
 

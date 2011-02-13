@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.pterodactylus.util.graph.AbstractNode;
+import net.pterodactylus.util.graph.Edge;
 import net.pterodactylus.util.graph.GraphException;
 import net.pterodactylus.util.graph.Node;
 import net.pterodactylus.util.graph.Relationship;
@@ -99,7 +100,7 @@ class DiskNode extends AbstractNode implements Storable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Set<DiskEdge> getIncomingLinks(Relationship relationship) throws GraphException {
+	public Set<Edge> getIncomingLinks(Relationship relationship) throws GraphException {
 		Validation.begin().isNotNull("Relationship", relationship).check().isInstanceOf("Relationship", relationship, DiskRelationship.class).check();
 		return ((DiskGraph) getGraph()).getEdgesTo(this, (DiskRelationship) relationship);
 	}
@@ -108,7 +109,7 @@ class DiskNode extends AbstractNode implements Storable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Set<DiskEdge> getOutgoingLinks(Relationship relationship) throws GraphException {
+	public Set<Edge> getOutgoingLinks(Relationship relationship) throws GraphException {
 		Validation.begin().isNotNull("Relationship", relationship).check().isInstanceOf("Relationship", relationship, DiskRelationship.class).check();
 		return ((DiskGraph) getGraph()).getEdgesFrom(this, (DiskRelationship) relationship);
 	}

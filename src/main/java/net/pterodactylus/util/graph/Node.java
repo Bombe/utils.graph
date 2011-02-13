@@ -121,7 +121,7 @@ public interface Node {
 	 * @throws GraphException
 	 *             if the links can not be retrieved
 	 */
-	public Set<? extends Edge> getIncomingLinks(Relationship relationship) throws GraphException;
+	public Set<Edge> getIncomingLinks(Relationship relationship) throws GraphException;
 
 	/**
 	 * Returns all edges that have this node as the end node.
@@ -133,7 +133,7 @@ public interface Node {
 	 * @throws GraphException
 	 *             if the links can not be retrieved
 	 */
-	public Set<? extends Edge> getIncomingLinks(String relationship) throws GraphException;
+	public Set<Edge> getIncomingLinks(String relationship) throws GraphException;
 
 	/**
 	 * Returns all edges that have this node as the start node.
@@ -145,7 +145,7 @@ public interface Node {
 	 * @throws GraphException
 	 *             if the links can not be retrieved
 	 */
-	public Set<? extends Edge> getOutgoingLinks(Relationship relationship) throws GraphException;
+	public Set<Edge> getOutgoingLinks(Relationship relationship) throws GraphException;
 
 	/**
 	 * Returns all edges that have this node as the start node.
@@ -157,6 +157,6 @@ public interface Node {
 	 * @throws GraphException
 	 *             if the links can not be retrieved
 	 */
-	public Set<? extends Edge> getOutgoingLinks(String relationship) throws GraphException;
+	public Set<Edge> getOutgoingLinks(String relationship) throws GraphException;
 
 }

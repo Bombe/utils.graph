@@ -93,7 +93,7 @@ public abstract class AbstractNode implements Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Set<? extends Edge> getIncomingLinks(String relationship) throws GraphException {
+	public Set<Edge> getIncomingLinks(String relationship) throws GraphException {
 		return getIncomingLinks(graph.getRelationship(relationship));
 	}
 
@@ -101,7 +101,7 @@ public abstract class AbstractNode implements Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Set<? extends Edge> getOutgoingLinks(String relationship) throws GraphException {
+	public Set<Edge> getOutgoingLinks(String relationship) throws GraphException {
 		return getOutgoingLinks(graph.getRelationship(relationship));
 	}
 
