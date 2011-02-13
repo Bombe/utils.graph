@@ -58,7 +58,8 @@ public interface Node {
 	public Object get(String key);
 
 	/**
-	 * Links this node to the given node with the given relationship.
+	 * Links this node to the given node with the given relationship. If such a
+	 * link does already exist no new link is created.
 	 *
 	 * @param otherNode
 	 *            The node to link to
@@ -71,7 +72,8 @@ public interface Node {
 	public Node link(Node otherNode, Relationship relationship) throws GraphException;
 
 	/**
-	 * Links this node to the given node with the given relationship.
+	 * Links this node to the given node with the given relationship. If such a
+	 * link does already exist no new link is created.
 	 *
 	 * @param otherNode
 	 *            The node to link to
