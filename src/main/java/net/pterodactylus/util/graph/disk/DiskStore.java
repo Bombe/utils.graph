@@ -165,9 +165,8 @@ public class DiskStore implements Store {
 	 *             if the node could not be removed
 	 */
 	void removeNode(DiskNode node) throws GraphException {
-		NodeEdgeList nodeEdges;
 		try {
-			nodeEdges = nodeEdgeListStorage.load(node.getId());
+			NodeEdgeList nodeEdges = nodeEdgeListStorage.load(node.getId());
 			nodeEdgeListStorage.remove(nodeEdges);
 			nodeStorage.remove(node);
 		} catch (StorageException se1) {
@@ -324,9 +323,8 @@ public class DiskStore implements Store {
 	 *             if the edge can not be loaded
 	 */
 	DiskEdge getEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
-		NodeEdgeList nodeEdges;
 		try {
-			nodeEdges = nodeEdgeListStorage.load(startNode.getId());
+			NodeEdgeList nodeEdges = nodeEdgeListStorage.load(startNode.getId());
 			for (int index = 0, size = nodeEdges.size(); index < size; ++index) {
 				if ((nodeEdges.getStartNodeId(index) == startNode.getId()) && (nodeEdges.getEndNodeId(index) == endNode.getId()) && (nodeEdges.getRelationshipId(index) == relationship.getId())) {
 					return new DiskEdge(nodeEdges.getEdgeId(index), graph, startNode, endNode, relationship);
