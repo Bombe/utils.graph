@@ -287,18 +287,24 @@ public class DiskStore implements Store {
 	 *            The end node of the edge
 	 * @param relationship
 	 *            The relationship of the edge
+	 * @return {@code true} if an edge was removed, {@code false} if no edge was
+	 *         removed
 	 * @throws GraphException
 	 *             if the edge can not be removed
 	 */
-	void removeEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
+	boolean removeEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
 		try {
 			DiskEdge edge = getEdge(startNode, endNode, relationship);
+			if (edge == null) {
+				return false;
+			}
 			NodeEdgeList nodeEdges = nodeEdgeListStorage.load(startNode.getId());
 			nodeEdges.removeEdge(edge.getId());
 			nodeEdgeListStorage.add(nodeEdges);
 			nodeEdges = nodeEdgeListStorage.load(endNode.getId());
 			nodeEdges.removeEdge(edge.getId());
 			nodeEdgeListStorage.add(nodeEdges);
+			return true;
 		} catch (StorageException se1) {
 			throw new GraphException("Could not remove edge for startNode: " + startNode + ", endNode: " + endNode + ", relationship: " + relationship, se1);
 		}

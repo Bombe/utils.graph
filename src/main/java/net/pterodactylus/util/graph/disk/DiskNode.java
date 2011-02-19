@@ -80,20 +80,18 @@ class DiskNode extends AbstractNode implements Storable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DiskNode link(Node otherNode, Relationship relationship) throws GraphException {
+	public boolean link(Node otherNode, Relationship relationship) throws GraphException {
 		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isInstanceOf("Other Node", otherNode, DiskNode.class).isInstanceOf("Relationship", relationship, DiskRelationship.class).isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
-		((DiskGraph) getGraph()).createEdge(this, (DiskNode) otherNode, (DiskRelationship) relationship);
-		return this;
+		return ((DiskGraph) getGraph()).createEdge(this, (DiskNode) otherNode, (DiskRelationship) relationship);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DiskNode unlink(Node otherNode, Relationship relationship) throws GraphException {
+	public boolean unlink(Node otherNode, Relationship relationship) throws GraphException {
 		Validation.begin().isNotNull("Other Node", otherNode).isNotNull("Relationship", relationship).check().isInstanceOf("Other Node", otherNode, DiskNode.class).isInstanceOf("Relationship", relationship, DiskRelationship.class).isEqual("Other Node’s Graph", otherNode.getGraph(), getGraph()).check();
-		((DiskGraph) getGraph()).removeEdge(this, (DiskNode) otherNode, (DiskRelationship) relationship);
-		return this;
+		return ((DiskGraph) getGraph()).removeEdge(this, (DiskNode) otherNode, (DiskRelationship) relationship);
 	}
 
 	/**

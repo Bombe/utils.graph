@@ -65,11 +65,12 @@ public interface Node {
 	 *            The node to link to
 	 * @param relationship
 	 *            The relationship of the link
-	 * @return This node
+	 * @return {@code true} if an edge was added, {@code false} if no edge was
+	 *         added
 	 * @throws GraphException
 	 *             if the edge can not be created
 	 */
-	public Node link(Node otherNode, Relationship relationship) throws GraphException;
+	public boolean link(Node otherNode, Relationship relationship) throws GraphException;
 
 	/**
 	 * Links this node to the given node with the given relationship. If such a
@@ -79,11 +80,12 @@ public interface Node {
 	 *            The node to link to
 	 * @param relationship
 	 *            The relationship of the link
-	 * @return This node
+	 * @return {@code true} if an edge was added, {@code false} if no edge was
+	 *         added
 	 * @throws GraphException
 	 *             if the edge can not be created
 	 */
-	public Node link(Node otherNode, String relationship) throws GraphException;
+	public boolean link(Node otherNode, String relationship) throws GraphException;
 
 	/**
 	 * Removes the link to the given node with the given relationship.
@@ -92,11 +94,12 @@ public interface Node {
 	 *            The node to sever the link from
 	 * @param relationship
 	 *            The relationship of the link
-	 * @return This node
+	 * @return {@code true} if an edge was removed, {@code false} if no edge was
+	 *         removed
 	 * @throws GraphException
 	 *             if the edge can not be removed
 	 */
-	public Node unlink(Node otherNode, Relationship relationship) throws GraphException;
+	public boolean unlink(Node otherNode, Relationship relationship) throws GraphException;
 
 	/**
 	 * Removes the link to the given node with the given relationship.
@@ -105,11 +108,12 @@ public interface Node {
 	 *            The node to sever the link from
 	 * @param relationship
 	 *            The relationship of the link
-	 * @return This node
+	 * @return {@code true} if an edge was removed, {@code false} if no edge was
+	 *         removed
 	 * @throws GraphException
 	 *             if the edge can not be removed
 	 */
-	public Node unlink(Node otherNode, String relationship) throws GraphException;
+	public boolean unlink(Node otherNode, String relationship) throws GraphException;
 
 	/**
 	 * Returns all edges that have this node as the end node.

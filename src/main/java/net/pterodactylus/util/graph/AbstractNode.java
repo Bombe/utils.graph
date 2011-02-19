@@ -77,7 +77,7 @@ public abstract class AbstractNode implements Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Node link(Node otherNode, String relationship) throws GraphException {
+	public boolean link(Node otherNode, String relationship) throws GraphException {
 		return link(otherNode, graph.getRelationship(relationship));
 	}
 
@@ -85,7 +85,7 @@ public abstract class AbstractNode implements Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Node unlink(Node otherNode, String relationship) throws GraphException {
+	public boolean unlink(Node otherNode, String relationship) throws GraphException {
 		return unlink(otherNode, graph.getRelationship(relationship));
 	}
 

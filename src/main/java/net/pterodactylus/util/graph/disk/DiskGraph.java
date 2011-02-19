@@ -153,6 +153,23 @@ class DiskGraph implements Graph {
 	}
 
 	/**
+	 * Returns whether the edge with the given nodes and relationship exists.
+	 *
+	 * @param startNode
+	 *            The start node of the edge
+	 * @param endNode
+	 *            The end node of the edge
+	 * @param relationship
+	 *            The relationship between the nodes
+	 * @return {@code true} if such an edge exists, {@code false} otherwise
+	 * @throws GraphException
+	 *             if a graph error occurs
+	 */
+	boolean hasEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
+		return store.getEdge(startNode, endNode, relationship) != null;
+	}
+
+	/**
 	 * Tries to find an edge between the given nodes that has the given
 	 * relationship. If no such edge exists a new one is created.
 	 *
@@ -166,12 +183,12 @@ class DiskGraph implements Graph {
 	 * @throws GraphException
 	 *             if the edge can not be created
 	 */
-	DiskEdge createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
-		DiskEdge edge = store.getEdge(startNode, endNode, relationship);
-		if (edge != null) {
-			return edge;
+	boolean createEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
+		if (hasEdge(startNode, endNode, relationship)) {
+			return false;
 		}
-		return store.createEdge(startNode, endNode, relationship);
+		store.createEdge(startNode, endNode, relationship);
+		return true;
 	}
 
 	/**
@@ -183,11 +200,13 @@ class DiskGraph implements Graph {
 	 *            The end node of the edge
 	 * @param relationship
 	 *            The relationship of the nodes
+	 * @return {@code true} if an edge was removed, {@code false} if no edge was
+	 *         removed
 	 * @throws GraphException
 	 *             if the edge can not be removed
 	 */
-	void removeEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
-		store.removeEdge(startNode, endNode, relationship);
+	boolean removeEdge(DiskNode startNode, DiskNode endNode, DiskRelationship relationship) throws GraphException {
+		return store.removeEdge(startNode, endNode, relationship);
 	}
 
 }
