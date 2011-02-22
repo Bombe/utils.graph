@@ -192,8 +192,11 @@ public class MemoryGraph implements Graph {
 	@Override
 	public void removeNode(Node node) throws GraphException {
 		Validation.begin().isNotNull("Node", node).check().isInstanceOf("Node", node, MemoryNode.class).isEqual("Node’s Graph", node.getGraph(), this).check();
-		Map<MemoryRelationship, Set<Edge>> relationshipEdges = new HashMap<MemoryRelationship, Set<Edge>>(nodeRelationshipEdges.get(node));
-		for (MemoryRelationship relationship : relationshipEdges.keySet()) {
+		Map<MemoryRelationship, Set<Edge>> relationshipEdges = nodeRelationshipEdges.remove(node);
+		if (relationshipEdges == null) {
+			return;
+		}
+		for (MemoryRelationship relationship : new HashSet<MemoryRelationship>(relationshipEdges.keySet())) {
 			for (Edge edge : new HashSet<Edge>(relationshipEdges.get(relationship))) {
 				removeEdge((MemoryNode) edge.getStartNode(), (MemoryNode) edge.getEndNode(), relationship);
 			}
