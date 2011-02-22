@@ -44,6 +44,23 @@ public class StoreTest extends TestCase {
 		}
 	}
 
+	/**
+	 * Tests whether the first two root nodes returned by
+	 * {@link Graph#getRootNode()} of a single instance are identical.
+	 */
+	public void testSingleRootNode() {
+		for (Store store : getStores()) {
+			assertNotNull("Store", store);
+			Graph graph = store.getGraph();
+			assertNotNull("Graph", graph);
+			Node firstRootNode = graph.getRootNode();
+			assertNotNull("First Root Node", firstRootNode);
+			Node secondRootNode = graph.getRootNode();
+			assertNotNull("Second Root Node", secondRootNode);
+			assertEquals("Root Nodes", firstRootNode, secondRootNode);
+		}
+	}
+
 	//
 	// PROTECTED
 	//
