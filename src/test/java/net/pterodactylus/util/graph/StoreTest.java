@@ -58,6 +58,7 @@ public class StoreTest extends TestCase {
 			Node secondRootNode = graph.getRootNode();
 			assertNotNull("Second Root Node", secondRootNode);
 			assertEquals("Root Nodes", firstRootNode, secondRootNode);
+			assertEquals("Root Node’s Graph", graph, firstRootNode.getGraph());
 		}
 	}
 
