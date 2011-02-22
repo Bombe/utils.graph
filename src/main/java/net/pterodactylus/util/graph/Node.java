@@ -54,8 +54,10 @@ public interface Node {
 	 * @param key
 	 *            The key of the property
 	 * @return The value of the property
+	 * @throws GraphException
+	 *             if a graph error occurs
 	 */
-	public Object get(String key);
+	public Object get(String key) throws GraphException;
 
 	/**
 	 * Links this node to the given node with the given relationship. If such a
