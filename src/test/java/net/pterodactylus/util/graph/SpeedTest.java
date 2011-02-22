@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import net.pterodactylus.util.graph.memory.MemoryStore;
 import net.pterodactylus.util.graph.disk.DiskStore;
 import net.pterodactylus.util.storage.StorageException;
 
@@ -55,8 +56,8 @@ public class SpeedTest {
 		})) {
 			file.delete();
 		}
-		DiskStore diskStore = new DiskStore(".");
-		Graph graph = diskStore.getGraph();
+		Store store = new MemoryStore();
+		Graph graph = store.getGraph();
 		List<Node> nodes = new ArrayList<Node>();
 		List<Relationship> relationships = new ArrayList<Relationship>();
 		long timestamp;
