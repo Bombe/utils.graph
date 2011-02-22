@@ -19,6 +19,7 @@ package net.pterodactylus.util.graph;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -59,6 +60,101 @@ public class StoreTest extends TestCase {
 			assertNotNull("Second Root Node", secondRootNode);
 			assertEquals("Root Nodes", firstRootNode, secondRootNode);
 			assertEquals("Root Node’s Graph", graph, firstRootNode.getGraph());
+		}
+	}
+
+	/**
+	 * Tests whether the store’s graph will create different relationships for
+	 * different names.
+	 *
+	 * @throws GraphException
+	 *             if a graph error occurs
+	 */
+	public void testDifferentRelationships() throws GraphException {
+		for (Store store : getStores()) {
+			Graph graph = store.getGraph();
+			Relationship firstRelationship = graph.getRelationship("first");
+			assertNotNull("First Relationship", firstRelationship);
+			Relationship secondRelationship = graph.getRelationship("second");
+			assertNotNull("Second Relationship", secondRelationship);
+			assertEquals("Different Relationships", false, firstRelationship.equals(secondRelationship));
+		}
+	}
+
+	/**
+	 * Tests whether the store’s graph will identical different relationships
+	 * for identical names.
+	 *
+	 * @throws GraphException
+	 *             if a graph error occurs
+	 */
+	public void testIdenticalRelationships() throws GraphException {
+		for (Store store : getStores()) {
+			Graph graph = store.getGraph();
+			Relationship firstRelationship = graph.getRelationship("first");
+			assertNotNull("First Relationship", firstRelationship);
+			Relationship secondRelationship = graph.getRelationship("first");
+			assertNotNull("Second Relationship", secondRelationship);
+			assertEquals("Identical Relationships", true, firstRelationship.equals(secondRelationship));
+		}
+	}
+
+	/**
+	 * Creates a new node, links the root node to it, and removes the link
+	 * again, checking for edge counts along the way.
+	 *
+	 * @throws GraphException
+	 *             if a graph error occurs
+	 */
+	public void testCreatingLinkingUnlinkingSingleNode() throws GraphException {
+		for (Store store : getStores()) {
+			Graph graph = store.getGraph();
+			Node rootNode = graph.getRootNode();
+			Node otherNode = graph.createNode();
+			Relationship relationship = graph.getRelationship("tests");
+			rootNode.link(otherNode, relationship);
+
+			Set<Edge> outgoingEdges = rootNode.getOutgoingLinks(relationship);
+			assertEquals("Root Node’s Outgoing Edges Count", 1, outgoingEdges.size());
+			outgoingEdges = rootNode.getOutgoingLinks("tests");
+			assertEquals("Root Node’s Outgoing Edges Count", 1, outgoingEdges.size());
+
+			Set<Edge> incomingEdges = rootNode.getIncomingLinks(relationship);
+			assertEquals("Root Node’s Incoming Edges Count", 0, incomingEdges.size());
+			incomingEdges = rootNode.getIncomingLinks("tests");
+			assertEquals("Root Node’s Incoming Edges Count", 0, incomingEdges.size());
+
+			outgoingEdges = otherNode.getOutgoingLinks(relationship);
+			assertEquals("Other Node’s Outgoing Edges Count", 0, outgoingEdges.size());
+			outgoingEdges = otherNode.getOutgoingLinks("tests");
+			assertEquals("Other Node’s Outgoing Edges Count", 0, outgoingEdges.size());
+
+			incomingEdges = otherNode.getIncomingLinks(relationship);
+			assertEquals("Other Node’s Incoming Edges Count", 1, incomingEdges.size());
+			incomingEdges = otherNode.getIncomingLinks("tests");
+			assertEquals("Other Node’s Incoming Edges Count", 1, incomingEdges.size());
+
+			rootNode.unlink(otherNode, relationship);
+
+			outgoingEdges = rootNode.getOutgoingLinks(relationship);
+			assertEquals("Root Node’s Outgoing Edges Count", 0, outgoingEdges.size());
+			outgoingEdges = rootNode.getOutgoingLinks("tests");
+			assertEquals("Root Node’s Outgoing Edges Count", 0, outgoingEdges.size());
+
+			incomingEdges = rootNode.getIncomingLinks(relationship);
+			assertEquals("Root Node’s Incoming Edges Count", 0, incomingEdges.size());
+			incomingEdges = rootNode.getIncomingLinks("tests");
+			assertEquals("Root Node’s Incoming Edges Count", 0, incomingEdges.size());
+
+			outgoingEdges = otherNode.getOutgoingLinks(relationship);
+			assertEquals("Other Node’s Outgoing Edges Count", 0, outgoingEdges.size());
+			outgoingEdges = otherNode.getOutgoingLinks("tests");
+			assertEquals("Other Node’s Outgoing Edges Count", 0, outgoingEdges.size());
+
+			incomingEdges = otherNode.getIncomingLinks(relationship);
+			assertEquals("Other Node’s Incoming Edges Count", 0, incomingEdges.size());
+			incomingEdges = otherNode.getIncomingLinks("tests");
+			assertEquals("Other Node’s Incoming Edges Count", 0, incomingEdges.size());
 		}
 	}
 
