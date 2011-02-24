@@ -17,15 +17,12 @@
 
 package net.pterodactylus.util.graph;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import net.pterodactylus.util.graph.memory.MemoryStore;
-import net.pterodactylus.util.graph.disk.DiskStore;
 import net.pterodactylus.util.storage.StorageException;
 
 /**
@@ -47,15 +44,16 @@ public class SpeedTest {
 	}
 
 	public static void test() throws GraphException {
-		for (File file : new File(".").listFiles(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".dat") || name.endsWith(".idx");
-			}
-		})) {
-			file.delete();
-		}
+//		for (File file : new File(".").listFiles(new FilenameFilter() {
+//
+//			@Override
+//			public boolean accept(File dir, String name) {
+//				return name.endsWith(".dat") || name.endsWith(".idx");
+//			}
+//		})) {
+//			file.delete();
+//		}
+//		DiskStore diskStore = new DiskStore(".");
 		Store store = new MemoryStore();
 		Graph graph = store.getGraph();
 		List<Node> nodes = new ArrayList<Node>();
